@@ -1,0 +1,4 @@
+token:
+  expiration_time: 86400000
+  secret: my_token
+
