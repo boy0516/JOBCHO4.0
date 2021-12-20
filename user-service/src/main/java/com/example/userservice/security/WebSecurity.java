@@ -17,11 +17,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private Environment env;
 
-    public WebSecurity(Environment env, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder){
+    public WebSecurity(Environment env, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.env = env;
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    };
+    }
+
+    ;
 
     @Override//권한
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,9 +35,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     }
 
 
-
     @Override
-    protected  void configure(AuthenticationManagerBuilder auth) throws Exception{
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
     }
 }
