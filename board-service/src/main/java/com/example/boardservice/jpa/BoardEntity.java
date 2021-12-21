@@ -29,13 +29,13 @@ public class BoardEntity implements Serializable {
     private String boardInfo;
 
     @Column(nullable = false)
-    private Long memberNum;
+    private Integer memberNum;
 
-    @Column(nullable = false, unique = true)
-    private Long teamNum;
+    @Column(nullable = false)
+    private Integer teamNum;
 
     @ColumnDefault(value = "1")
-    private char isLive;
+    private Integer isLive;
 
     @Column(nullable = false, updatable = false, insertable = false)
     @ColumnDefault(value = "CURRENT_TIMESTAMP")

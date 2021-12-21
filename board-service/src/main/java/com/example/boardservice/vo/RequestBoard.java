@@ -10,6 +10,7 @@ import java.util.Date;
 @Data
 public class RequestBoard implements Serializable {
 
+	private Long boardNum;
 	private String boardName;
 	private String boardInfo;
 	private Integer memberNum;
