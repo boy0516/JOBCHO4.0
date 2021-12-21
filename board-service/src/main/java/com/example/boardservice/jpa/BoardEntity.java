@@ -1,0 +1,43 @@
+package com.example.boardservice.jpa;
+
+
+import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
+@Data
+@Entity
+@Table(name="board")
+@DynamicInsert
+@DynamicUpdate
+public class BoardEntity implements Serializable {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long boardNum;
+
+    @Column(nullable = false, length = 1000)
+    private String boardName;
+
+    @Column(nullable = false, length = 1000)
+    private String boardInfo;
+
+    @Column(nullable = false)
+    private Long memberNum;
+
+    @Column(nullable = false, unique = true)
+    private Long teamNum;
+
+    @ColumnDefault(value = "1")
+    private char isLive;
+
+    @Column(nullable = false, updatable = false, insertable = false)
+    @ColumnDefault(value = "CURRENT_TIMESTAMP")
+    private Date boardDate;
+}
