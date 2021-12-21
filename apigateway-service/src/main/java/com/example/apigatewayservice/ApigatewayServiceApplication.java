@@ -13,8 +13,8 @@ public class ApigatewayServiceApplication {
         SpringApplication.run(ApigatewayServiceApplication.class, args);
     }
 
-   @Bean
-    public HttpTraceRepository httpTraceRepository(){
-       return new InMemoryHttpTraceRepository();
+    @Bean
+    public HttpTraceRepository httpTraceRepository() {
+        return new InMemoryHttpTraceRepository();
     }
 }
