@@ -1,0 +1,175 @@
+
+/*寃��깋李�*/
+.search-navbar-right{
+    position: fixed;
+    top: 50px;
+    right: -48.25rem;
+    width: 48.25rem;
+    height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--white-color);
+    
+    padding-bottom: 50px;
+    transition: .5s;
+    z-index: 99;
+  }
+
+  .nav-search{
+    height: 100%;
+    margin-right: 10.25rem;
+  }
+
+  .expander-search{
+    right: 0;
+  }
+
+  .navbar-font-search{
+    transition: .5s;
+  }
+
+  .nav-search-title{
+    font-size: 18px;
+    
+    padding: 18px;
+  }
+
+  .nav-search-content{
+    
+    height: 100%;
+  }
+
+  #updataPosition{
+    width: 95%;
+    margin: 0px 10px 10px 10px;
+  }
+  /* .nav-search-content ul{
+    padding: 10px;
+    
+  }
+
+  .nav-search-content ul li{
+    display:inline;
+    padding:10px 19px 10px 19px;
+    text-align: center;
+    
+  } */
+
+  .nav-search-content ul{
+    padding: 10px;
+    width:100%;
+    height: 54px;
+    position: relative;
+    border-bottom: 1px solid #fafaff;
+  }
+
+  .nav-search-content .nav-search-category li{
+    float: left;
+    position:relative;
+    text-align: center;
+    width: 20%;
+    list-style:none;
+    padding: 10px 0px 10px 0px;
+    margin-bottom: 5px;
+    
+  } 
+  .nav-search-content ul li:hover{
+    border-bottom: 3px solid #fafaff;
+    
+  }
+  .nav-search-content-active{
+    border-bottom: 3px solid #fafaff;
+  }
+  .nav-search-content .nav-search-option select{
+    float: left;
+    position:relative;
+    text-align: center;
+    width: 33%;
+    list-style:none;
+    padding: 5px 0px 12px 0px;
+    background-color: var(--bg-color) ;
+    border: 0px;
+    border-radius: 10%;
+    outline: none;
+  } 
+
+  .nav-search-result{
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+  }
+
+  .nav-search-content hr{
+    border-color: #202d50;
+    margin:2px;
+  }
+
+  .result-image{
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    background-size: cover;
+    background-position: center;
+    float: left;
+}
+
+.nav-search-result-scroll{
+  max-height: 72%;
+  overflow-y: auto;
+}
+
+/*�븷�씪�깮�꽦*/
+#createToDo{
+  width: 95%;
+  border-radius: 5px;
+  background-color: #0c5df4;
+  text-align: center;
+  margin: 10px;
+  font-size: 16px;
+  padding: 8px;
+}
+
+/*�셿猷뚮맂�븷�씪�깮�꽦踰꾪듉*/
+#selectTodoDeleteList{
+  width: 95%;
+  border-radius: 5px;
+  background-color: #0c5df4;
+  text-align: center;
+  margin: 10px;
+  font-size: 16px;
+  padding: 8px;
+}
+
+
+/*�셿猷뚮맂 �닾�몴李�*/
+#end-vote-list{
+  width: 95%;
+  border-radius: 5px;
+  background-color: #0c5df4;
+  text-align: center;
+  margin: 10px;
+  font-size: 16px;
+  padding: 8px;
+}
+
+#createVote{
+  width: 95%;
+  border-radius: 5px;
+  background-color: #0c5df4;
+  text-align: center;
+  margin: 10px;
+  font-size: 16px;
+  padding: 8px;
+}
+
+.nav-todo-option select{
+  float: left;
+  position:relative;
+  text-align: center;
+  width: 33%;
+  list-style:none;
+  padding: 5px 0px 12px 0px;
+  background-color: var(--bg-color) ;
+  border: 0px;
+  border-radius: 10%;
+  outline: none;
+} 
