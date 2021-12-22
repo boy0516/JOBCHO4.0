@@ -1,9 +1,9 @@
 server:
-  port: 0
+  port: 8081
 
 spring:
   application:
-    name: board-service
+    name: post-service
   h2:
     console:
       enabled: true
@@ -26,3 +26,4 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka
+
