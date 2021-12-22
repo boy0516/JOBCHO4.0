@@ -2,7 +2,8 @@
  * 
  */
 $(document).ready(function(){
-	var user_num=$("#authUserNum").val();
+	const apiurl="http://127.0.0.1:8000/team-service"
+	var user_num=1;
 	
 	function showTeamList(result){
 		str="";
@@ -11,16 +12,16 @@ $(document).ready(function(){
 			str+=`<div class="job-container">
             <!--프로필-->
             
-            <div class="team-profile-image" style="background-image: url('/resources/team/default.png');"></div>
+            <div class="team-profile-image" style="background-image: url('/team/default.png');"></div>
             
             <div class="team-profile-info">
-                <p class="team-profile-name">`+item.team_name+`</p>
-                <p class="team-profile-email">`+item.team_info+`</p>
+                <p class="team-profile-name">`+item.teamName+`</p>
+                <p class="team-profile-email">`+item.teamInfo+`</p>
             </div>
             <!--프로필 끝-->
             <div class="team-btn">
-                <button class="teamAdminModal" value="`+item.team_num+`">팀관리</button>
-                <button class="enterTeamMain"  value='`+item.team_num+`'>팀으로 가기</button>
+                <button class="teamAdminModal" value="`+item.teamNum+`">팀관리</button>
+                <button class="enterTeamMain"  value='`+item.teamNum+`'>팀으로 가기</button>
             </div>
         </div>`
 		})
@@ -34,7 +35,7 @@ $(document).ready(function(){
 	
 	//사용자 이미지 관련
 	$.ajax({
-			url:"/team/1/member/"+user_num,
+			url:apiurl+"/team/1/member/"+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
@@ -59,7 +60,7 @@ $(document).ready(function(){
 		console.log("aaaa");
 	
 		$.ajax({
-			url:"/team/"+team_num+"/member/"+user_num,
+			url:apiurl+"/team/"+team_num+"/member/"+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
@@ -71,7 +72,7 @@ $(document).ready(function(){
 	
 	function showUpdateTeamInfo(team_num){
 		$.ajax({
-	        url:'/team/'+user_num,
+	        url:apiurl+'/team/'+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
@@ -89,7 +90,7 @@ $(document).ready(function(){
 	
 	function updateTeamAction(){
 		$.ajax({
-            url:'/team/'+$("#updateTeamNum").val(),
+            url:apiurl+'/team/'+$("#updateTeamNum").val(),
             type:'put',
             contentType:'application/json',
             data: JSON.stringify(
@@ -110,7 +111,7 @@ $(document).ready(function(){
 	
 	function getTeamList(){
 		$.ajax({
-	        url:'/team/getlist/'+user_num,
+	        url:apiurl+'/team/'+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
@@ -132,7 +133,7 @@ $(document).ready(function(){
 			$('#updataTeamInfoModal').modal("hide");
 		}else{
 			$.ajax({
-				url : '/team/'+$('#updateTeamNum').val(),
+				url : apiurl+'/team/'+$('#updateTeamNum').val(),
 				type : "delete",
 				contentType : "application/json",
 				success : function(data){
@@ -169,7 +170,7 @@ $(document).ready(function(){
 			}
 		 
 		 $.ajax({
-				url : '/team/'+user_num,
+				url : apiurl+'/team/'+user_num,
 				type : "post",
 				contentType : "application/json",
 				data : JSON.stringify({

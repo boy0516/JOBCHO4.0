@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="_csrf" content="${_csrf.token}"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <!-- 합쳐지고 최소화된 최신 CSS -->
@@ -47,7 +45,7 @@
         <div class="job-container">
             <!--프로필-->
 
-            <div class="team-profile-image" style="background-image: url('99D279435B3D788602.jfif');"></div>
+            <div class="team-profile-image" style="background-image: url('/team/99D279435B3D788602.jfif');"></div>
 
             <div>
                 <p class="team-profile-name">팀이름</p>
@@ -75,8 +73,8 @@
         <div >
             <div class="nav-profile-image-left" ></div>
             <div class="nav-profile-content-left" style="cursor:pointer">
-                <h1><sec:authentication property="principal.users.user_name"/></h1>
-                <h3><sec:authentication property="principal.users.user_email"/></h3>
+                <h1>1</h1>
+                <h3>2</h3>
             </div>
         </div>
 
@@ -106,14 +104,14 @@
                 <button class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <input type="hidden" class="form-control" id="user_num" name="user_num" value="<sec:authentication property="principal.users.user_num"/>">
-                이름<br> <input type="text" class="form-control" id="user_name" name="user_name" value="<sec:authentication property="principal.users.user_name"/>">
-                생일 <input type="text" class="form-control" id="user_birth" name="user_birth" value="<sec:authentication property="principal.users.user_birth"/>">
-                이메일<input type="hidden" class="form-control" id="user_email" name="user_email" value="<sec:authentication property="principal.users.user_email"/>">
-                비밀번호<input type="password" class="form-control" id="user_pw" name="user_pw" value="<sec:authentication property="principal.users.user_pw"/>">
-                비밀번호 확인<input type="password" class="form-control" id="user_pw2" name="user_pw2" value="<sec:authentication property="principal.users.user_pw"/>">
-                비밀번호 힌트<input type="text" class="form-control" id="user_pwHint" name="user_pwHint" value="<sec:authentication property="principal.users.user_pwHint"/>">
-                전화번호<input type="text" class="form-control" id="user_phoneNum" name="user_phoneNum" value="<sec:authentication property="principal.users.user_phoneNum"/>">
+                <input type="hidden" class="form-control" id="user_num" name="user_num" value="1">
+                이름<br> <input type="text" class="form-control" id="user_name" name="user_name" value="choi">
+                생일 <input type="text" class="form-control" id="user_birth" name="user_birth" value="9505">
+                이메일<input type="hidden" class="form-control" id="user_email" name="user_email" value="gmail">
+                비밀번호<input type="password" class="form-control" id="user_pw" name="user_pw" value="1234">
+                비밀번호 확인<input type="password" class="form-control" id="user_pw2" name="user_pw2" value="1234">
+                비밀번호 힌트<input type="text" class="form-control" id="user_pwHint" name="user_pwHint" value="완산고">
+                전화번호<input type="text" class="form-control" id="user_phoneNum" name="user_phoneNum" value="010-2020-2002">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 <br>
                 <input type="button" class="btn btn-info" onclick="checkValue();"  value="수정">
@@ -161,7 +159,7 @@
 
                 팀이름<input id="insertTeamName" type="text" class="form-control">
                 팀정보<input id="insertTeamInfo" type="text" class="form-control">
-                <input id="insertUser_num" type="hidden" class="form-control" value="<sec:authentication property="principal.users.user_num"/>">
+                <input id="insertUser_num" type="hidden" class="form-control" value="1"/>">
                 <input id="insertTeamAction" type="button" class="btn btn-primary" onclick="insertTeamAction()" value="팀 생성">
 
             </div>
@@ -174,7 +172,7 @@
 </form>
 
 <!-- 외부js에 변수 전달 -->
-<input id="authUserNum" value="<sec:authentication property="principal.users.user_num"/>">
+<input id="authUserNum" value="1">
 <script src="/team/sidebar-left.js"></script>
 <script type="text/javascript">
 
@@ -345,6 +343,6 @@
 
 
 </script>
-<script src="/resources/team/onteam.js"></script>
+<script src="/team/onteam.js"></script>
 </body>
 </html>
