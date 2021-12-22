@@ -1,9 +1,9 @@
 server:
-  port: 8090
+  port: 8091
 
 spring:
   application:
-    name: team-service
+    name: member-service
   h2:
     console:
       enabled: true
