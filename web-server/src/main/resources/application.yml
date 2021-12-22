@@ -1,0 +1,18 @@
+server:
+  port: 8092
+
+spring:
+  application:
+    name: web-server
+
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.appliction.instance_id:${random.value}}
+    prefer-ip-address: true
+  client:
+
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka

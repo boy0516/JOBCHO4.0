@@ -11,7 +11,7 @@ public interface TeamService {
     public int insertTeam(TeamDto team);
     public Iterable<TeamEntity> getListTeam(int user_num);
     public TeamEntity getTeam(int team_num);
-    public int updateTeam(TeamDto team);
+    public TeamEntity updateTeam(TeamDto team);
     public int deleteTeam(int team_num);
 //    TeamVO selectTeam(Map<String, String> map);
 

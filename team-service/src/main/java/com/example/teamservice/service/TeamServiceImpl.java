@@ -54,18 +54,18 @@ public class TeamServiceImpl implements TeamService{
     }
 
     @Override
-    public int updateTeam(TeamDto teamDto) {
+    public TeamEntity updateTeam(TeamDto teamDto) {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         log.info("팀vo"+teamDto);
         TeamEntity teamEntity = mapper.map(teamDto, TeamEntity.class);
         log.info("팀엔티티"+teamEntity);
         if(teamEntity.getTeamNum()==0){
-            return 0;
+            return null;
         }
         teamEntity.setIsLive(1);
         TeamEntity postedEntity = teamRepository.save(teamEntity);
-        return postedEntity!=null?1:0;
+        return postedEntity;
     }
 
     @Override

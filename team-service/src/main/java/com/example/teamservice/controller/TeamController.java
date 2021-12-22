@@ -7,6 +7,7 @@ import com.example.teamservice.vo.ResponseTeam;
 import com.example.teamservice.vo.RequestTeam;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +30,11 @@ public class TeamController {
     //팀생성
     @PostMapping("/{user_num}")
     public ResponseEntity<RequestTeam> insertTeam(@RequestBody RequestTeam requestTeam, @PathVariable("user_num") int user_num){
-
-        TeamDto teamDto = new ModelMapper().map(requestTeam, TeamDto.class);
-        teamDto.setUserNum(user_num);
+        log.info(String.valueOf(requestTeam));
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        TeamDto teamDto = mapper.map(requestTeam, TeamDto.class);
+        log.info(String.valueOf(teamDto));
         //팀생성 실행
         int re = teamService.insertTeam(teamDto);
 
@@ -63,15 +66,16 @@ public class TeamController {
 
     //팀업데이트
     @PutMapping(value = "/{team_num}")
-    public ResponseEntity<ResponseTeam> getTeam(@PathVariable("team_num") int team_num, @RequestBody RequestTeam requestTeam){
-
-        TeamDto teamDto = new ModelMapper().map(requestTeam, TeamDto.class);
+    public ResponseEntity<TeamEntity> getTeam(@PathVariable("team_num") int team_num, @RequestBody RequestTeam requestTeam){
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        TeamDto teamDto = mapper.map(requestTeam, TeamDto.class);
         teamDto.setTeamNum(team_num);
 
-        int insertCount = teamService.updateTeam(teamDto);
+        TeamEntity result = teamService.updateTeam(teamDto);
 
-        return insertCount == 1
-                ? new ResponseEntity<>(HttpStatus.OK)
+        return result != null
+                ? new ResponseEntity<>(result,HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 //
