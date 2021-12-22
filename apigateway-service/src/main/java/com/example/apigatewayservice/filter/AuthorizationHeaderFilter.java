@@ -19,12 +19,12 @@ import reactor.core.publisher.Mono;
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
     Environment env;
 
-    public AuthorizationHeaderFilter(Environment env){
+    public AuthorizationHeaderFilter(Environment env) {
         super(Config.class);
         this.env = env;
     }
 
-    public static class Config{
+    public static class Config {
 
     }
 
@@ -35,14 +35,14 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             //사용자가 요청을했을떄 인증을 체크해줄거임
             ServerHttpRequest request = exchange.getRequest();
 
-            if(!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)){
+            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
 
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-            String jwt = authorizationHeader.replace("Bearer","");
+            String jwt = authorizationHeader.replace("Bearer", "");
 
-            if(!isJwtValid(jwt)){
+            if (!isJwtValid(jwt)) {
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
 
@@ -55,16 +55,16 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
         String subject = null;
 
-        try{
+        try {
             subject = Jwts.parser().setSigningKey(env.getProperty("token.secret"))
                     .parseClaimsJws(jwt).getBody()
                     .getSubject();
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             returnValue = false;
         }
 
-        if(subject == null || subject.isEmpty()){
+        if (subject == null || subject.isEmpty()) {
             returnValue = false;
         }
 
@@ -74,13 +74,11 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     //Mono, Flux -> Spring WebFlux
     private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
-        ServerHttpResponse response= exchange.getResponse();
+        ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
         log.error(err);
         return response.setComplete();//setComplete를 쓰면 mono타입으로 반화할 수 있다
     }
-
-
 
 
 }
