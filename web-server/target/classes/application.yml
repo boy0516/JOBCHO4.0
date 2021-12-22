@@ -1,0 +1,11 @@
+server:
+  port: 8092
+
+spring:
+  devtools:
+    livereload:
+      enabled: true
+  freemarker:
+    cache: false
+  thymeleaf:
+    cache: false

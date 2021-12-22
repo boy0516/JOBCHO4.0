@@ -1,0 +1,38 @@
+@CHARSET "UTF-8";
+
+.dragablediv {
+  position: absolute;
+  z-index: 101;
+  background-color: #f1f1f1;
+  border: 1px solid #d3d3d3;
+  text-align: center;
+  resize:both;
+  
+  width:400px;
+  min-width: 300px;
+  top: 73px; left: 136px;
+}
+
+.dragablediv:hover{
+  z-index: 102;
+}
+
+.dragabledivheader {
+  padding: 10px;
+  cursor: move;
+  z-index: 101;
+  background-color: #2196F3;
+  color: #fff;
+}
+
+.dragablediv ul li {
+	list-style-type: none; 
+	float: left;
+	
+	}
+.dragablediv img{
+	width: 100px;
+	height: 100px;
+}
+
+
