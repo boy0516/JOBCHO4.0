@@ -34,26 +34,26 @@ $(document).ready(function(){
 	})
 	
 	//사용자 이미지 관련
-	$.ajax({
-			url:apiurl+"/team/1/member/"+user_num,
-	        type:'Get',
-	        dataType:'json',
-	        success:function(result){
-	        	console.log(result);
-	        	showProfile(result);
-	        }
-		})
+	// $.ajax({
+	// 		url:apiurl+"/team/1/member/"+user_num,
+	//         type:'Get',
+	//         dataType:'json',
+	//         success:function(result){
+	//         	console.log(result);
+	//         	showProfile(result);
+	//         }
+	// 	})
 	
-		//사용자 이미지 관련
-		function showProfile(result){
-			console.log("실행");
-				if(result.profile_name!=null){
-					console.log("실행2");
-					$('.nav-profile-image-left').css('background-image', "url('/display?filename="+result.profile_name+"')"); 
-					
-				}
-			console.log("실행3");
-		}//end showProfile
+		// //사용자 이미지 관련
+		// function showProfile(result){
+		// 	console.log("실행");
+		// 		if(result.profile_name!=null){
+		// 			console.log("실행2");
+		// 			$('.nav-profile-image-left').css('background-image', "url('/display?filename="+result.profile_name+"')");
+		//
+		// 		}
+		// 	console.log("실행3");
+		// }//end showProfile
 	
 	function getMemberNum(team_num){
 		console.log(team_num);

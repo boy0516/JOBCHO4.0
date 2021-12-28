@@ -46,6 +46,14 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        - id: web-server
+          uri: lb://WEB-SERVER
+          predicates:
+            - Path=/jobcho/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/jobcho/(?<segment>.*), /$\{segment}
 management:
   endpoints:
     web:

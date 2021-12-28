@@ -31,7 +31,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDto getMemberByTeamNumAndUserNum(int teamNum, int userNum) {
         MemberEntity memberEntity = memberRepository.findByTeamNumAndUserNum(teamNum,userNum);
-        MemberDto memberDto = new ModelMapper().map(memberEntity,MemberDto.class);
+        MemberDto memberDto;
+        try{
+            memberDto = new ModelMapper().map(memberEntity,MemberDto.class);
+        }catch(Exception e){
+            log.info("memberEntity is null");
+            return null;
+        }
         return memberDto;
     }
 //
