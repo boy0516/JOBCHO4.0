@@ -43,7 +43,13 @@ public class MemberController {
             @PathVariable("team_num") int team_num,
             @PathVariable("user_num") int user_num){
         MemberDto memberDto = memberService.getMemberByTeamNumAndUserNum(team_num,user_num);
-        ResponseMember result = new ModelMapper().map(memberDto,ResponseMember.class);
+        ResponseMember result;
+        try{
+            result = new ModelMapper().map(memberDto,ResponseMember.class);
+        }catch(Exception e){
+            log.info("memberDto is null");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 //
