@@ -1,6 +1,7 @@
 package com.example.postservice.jpa;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -25,7 +26,7 @@ public class PostEntity implements Serializable {
     private String postTitle;
 
     @Column(nullable = false, length = 1000)
-    private String postContexts;
+    private String postContents;
 
     @Column(nullable = false)
     private Integer boardNum;
@@ -44,6 +45,7 @@ public class PostEntity implements Serializable {
 
     @Column(nullable = false, updatable = false, insertable = false)
     @ColumnDefault(value = "CURRENT_TIMESTAMP")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date PostDate;
 
 }

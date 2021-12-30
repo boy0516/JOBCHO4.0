@@ -14,6 +14,8 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/team/{team_num}/board/{board_num}/post")
@@ -34,9 +37,9 @@ public class PostController {
 
     /*게시글 생성*/
     @PostMapping("/new")
-    public ResponseEntity<ResponsePost> createOrder(@PathVariable("board_num") Integer boardNum,
+    public ResponseEntity<String> createOrder(@PathVariable("board_num") Integer boardNum,
                                                     @RequestBody RequestPost requestPost) {
-        log.info("Before 게시글 생성: " + boardNum);
+        log.info("Before 게시글 생성: " + requestPost.getPostContents());
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -48,23 +51,25 @@ public class PostController {
         ResponsePost responsePost = mapper.map(createdPost, ResponsePost.class);
 
 
-        log.info("After 게시글 생성");
-        return ResponseEntity.status(HttpStatus.CREATED).body(responsePost);
+        log.info("After 게시글 생성"+ responsePost.getPostTitle());
+        return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
 
 
     /*게시글 리스트 조회*/
-    @GetMapping("")
+    @PostMapping("")
     public ResponseEntity<HashMap<Object, Object>> getListPost(@PathVariable("board_num") Integer boardNum,
-                                                                @RequestBody Criteria cri){
+                                                               @RequestBody Criteria cri, Pageable pageable){
 
-        log.info("게시글 리스트 요청: " + boardNum);
+
 
         //페이징 처리
-        PageRequest pageRequest = PageRequest.of(cri.getPageNum(), cri.getAmount());
-        Page<PostEntity> postList = postService.getListPost(boardNum, pageRequest);
+
+        Page<PostEntity> postList = postService.getListPost(boardNum, pageable);
 
         PageInfo page = new PageInfo(cri, postList.getTotalElements());
+
+        log.info("게시글 리스트 요청: " + postList.getContent());
 
         HashMap<Object, Object> map = new HashMap<Object, Object>();
         map.put("getListPost", postList); //게시글 목록
@@ -83,7 +88,7 @@ public class PostController {
         log.info("게시글 상세정보 요청: " +postNum);
         ModelMapper mapper =  new ModelMapper();
         PostDto postDto = postService.getPost(postNum);
-
+        log.info("게시글 상세정보 요청: " +postDto.getPostTitle());
         ResponsePost result = mapper.map(postDto, ResponsePost.class);
 
         log.info("게시글 상세정보 반환:" + result );

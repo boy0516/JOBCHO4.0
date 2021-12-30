@@ -9,7 +9,7 @@ public class ResponsePost {
 
     private Long postNum;
     private String postTitle;
-    private String postContexts;
+    private String postContents;
     private Integer boardNum;
     private String writer;
     private Integer replyCnt;

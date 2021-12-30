@@ -4,6 +4,7 @@ package com.example.postservice.service;
 import com.example.postservice.dto.PostDto;
 import com.example.postservice.jpa.PostEntity;
 import com.example.postservice.jpa.PostRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,13 @@ import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 
 @Service
+@Slf4j
 public class PostServiceImpl implements PostService {
 
     PostRepository postRepository;
@@ -54,7 +57,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto getPost(Long postNum){
         PostEntity postEntity = postRepository.findByPostNum(postNum);
+        log.info("게시글 상세정보 서비스: " +postEntity.getPostTitle());
         PostDto postDto = new ModelMapper().map(postEntity, PostDto.class);
+
 
         return postDto;
     }
@@ -67,7 +72,7 @@ public class PostServiceImpl implements PostService {
         PostEntity postEntity = postRepository.findByPostNum(postDto.getPostNum());
 
         postEntity.setPostTitle(postDto.getPostTitle());
-        postEntity.setPostContexts(postDto.getPostContexts());
+        postEntity.setPostContents(postDto.getPostContents());
 
         //변경사항 저장
         postRepository.save(postEntity);
