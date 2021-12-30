@@ -1,0 +1,89 @@
+@charset "utf-8";
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+*{
+    font-family:'Nanum Gothic';
+}
+a{
+    color:#000000;
+    text-decoration: none;
+}
+a:hover{
+    color: #bbbbbb;
+    text-decoration: none;
+}
+
+
+.navbar-default {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #12192c;
+    border-color:#12192c;
+    border-radius: 0em;
+    z-index: 1;
+    height: 4rem;
+}
+
+.navbar-default .container-fluid{
+    background-color: #12192c;
+}
+
+.navbar-default .navbar-brand{
+    color:#ffffff;
+}
+
+
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus{ 
+    background-color: transparent;
+    color:#bbbbbb;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus{ 
+    color: white;
+    background-color: #12192c;
+}
+
+.navbar-default .navbar-brand > li > a:hover,
+.navbar-default .navbar-brand > li > a:focus{ 
+    color: #bbbbbb;
+}
+
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus{ 
+    color: #000000;
+    background-color: #ffffff;
+    text-decoration: none;
+}
+
+.navbar-default .navbar-nav> li>a{
+    color: white;
+}
+
+.navbar-icon{
+    font-size: 2rem;
+}
+
+
+.thumnail-profile{
+    background-image: url("99D279435B3D788602.jfif");
+    background-size: cover;
+    width: 2rem;
+    height: 2rem;
+    float: left;
+    border-radius: 100em;
+}
+
+.modal-content{
+    max-height: 50rem;
+    
+}
+
+.modal-scroll{
+    max-height: 35rem;
+    overflow-y: auto;
+}

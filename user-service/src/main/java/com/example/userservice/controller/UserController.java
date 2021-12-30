@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @GetMapping("/health_check")
-    public String status(){
+    public String status() {
         return "user-service is running";
     }
 

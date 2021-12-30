@@ -1,0 +1,148 @@
+/*===== GOOGLE FONTS =====*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+/*===== VARIABLES CSS =====*/
+:root{
+  --nav-width: 100px;
+
+  /*===== Colores =====*/
+  --first-color: #0C5DF4;
+  --bg-color2: hsl(133, 45%, 75%);
+  --bg-color: #12192C;
+  --sub-color: #B6CEFC;
+  --white-color: #FFF;
+  
+  /*===== Fuente y tipografia =====*/
+  --body-font: 'Poppins', sans-serif;
+  --normal-font-size: 2rem;
+  --small-font-size: 1.8rem;
+  --icon-font-size:3rem;
+  --link-padding:2rem;
+  /*===== z index =====*/
+  --z-fixed: 100;
+}
+
+
+/*===== BASE =====*/
+*,::before,::after{
+  box-sizing: border-box;
+}
+
+
+a{
+  text-decoration: none;
+}
+
+/*===== l NAV =====*/
+.navbar-font-right{
+  transition: .5s;
+}
+
+.l-navbar-right{
+  position: fixed;
+  top: 50px;
+  right: 0;
+  width: var(--nav-width);
+  height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--white-color);
+  padding: 1.5rem 1.5rem 2rem;
+  padding-bottom: 50px;
+  transition: .5s;
+  z-index: var(--z-fixed);
+}
+
+/*===== NAV =====*/
+.nav-right{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.nav__brand-right{
+  display: grid;
+  grid-template-columns: max-content max-content;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+.nav__toggle-right{
+  font-size: var(--icon-font-size);
+  padding: 2rem;
+  cursor: pointer;
+}
+.nav__logo-right{
+  color: var(--white-color);
+  font-weight: 600;
+}
+
+.nav__link-right{
+  display: grid;
+  grid-template-columns: max-content max-content;
+  align-items: center;
+  column-gap: .75rem;
+  padding: var(--link-padding);
+  color: var(--white-color);
+  border-radius: .5rem;
+  margin-bottom: 1rem;
+  transition: .3s;
+  cursor: pointer;
+}
+.nav__link-right:hover{
+  background-color: var(--first-color);
+}
+.nav__icon-right{
+  font-size: var(--icon-font-size);
+  padding-right: 2rem;
+}
+.nav__name-right{
+  font-size: var(--small-font-size);
+  padding-right:1rem
+}
+
+/*Expander menu*/
+.expander-right{
+  width: calc(var(--nav-width) + 12.25rem);
+}
+
+/*Add padding body*/
+.body-pd-right{
+  padding: 2rem 0 0 16rem;
+}
+
+/*Active links menu*/
+.active-right{
+  background-color: var(--first-color);
+}
+
+/*===== COLLAPSE =====*/
+.collapse-right{
+  grid-template-columns: 50px max-content 1fr;
+}
+.collapse__link-right{
+  justify-self: flex-end;
+  transition: .5s;
+}
+.collapse__menu-right{
+  display: none;
+  padding: .75rem 2.25rem;
+}
+.collapse__sublink-right{
+  color: var(--sub-color);
+  font-size: var(--small-font-size);
+}
+.collapse__sublink-right:hover{
+  color: var(--white-color);
+}
+
+/*Show collapse*/
+.showCollapse-right{
+  display: block;
+}
+
+/*Rotate icon*/
+.rotate-right{
+  transform: rotate(180deg);
+}
+
