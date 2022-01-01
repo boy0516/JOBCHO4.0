@@ -61,8 +61,6 @@ public class PostController {
     public ResponseEntity<HashMap<Object, Object>> getListPost(@PathVariable("board_num") Integer boardNum,
                                                                @RequestBody Criteria cri, Pageable pageable){
 
-
-
         //페이징 처리
 
         Page<PostEntity> postList = postService.getListPost(boardNum, pageable);
@@ -87,18 +85,20 @@ public class PostController {
 
         log.info("게시글 상세정보 요청: " +postNum);
         ModelMapper mapper =  new ModelMapper();
+
         PostDto postDto = postService.getPost(postNum);
         log.info("게시글 상세정보 요청: " +postDto.getPostTitle());
-        ResponsePost result = mapper.map(postDto, ResponsePost.class);
 
+        ResponsePost result = mapper.map(postDto, ResponsePost.class);
         log.info("게시글 상세정보 반환:" + result );
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
 
     /*게시글 수정*/
-    @PutMapping("{post_num}")
-    public ResponseEntity<ResponsePost> updatePost(@PathVariable("post_num") Long postNum,
+    @PutMapping("{postNum}")
+    public ResponseEntity<ResponsePost> updatePost(@PathVariable("postNum") Long postNum,
                                                    @RequestBody RequestPost requestPost){
 
         log.info("게시글 수정 요청:  "+ postNum);

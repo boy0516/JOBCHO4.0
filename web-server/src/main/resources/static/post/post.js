@@ -29,11 +29,11 @@ var listPost = (function() {
 
     //게시글 상세조회
     function getPost(param,callback, error) {
-        console.log("게시글 상세조회: "+ param.post_num);
+        console.log("게시글 상세조회: "+ param.postNum);
 
         $.ajax({
             type : 'get',
-            url : PostUrl+"/team/" +param.team_num+ "/board/" +param.board_num+ "/post/" +param.post_num, //Controller 호출
+            url : PostUrl+"/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/" +param.postNum, //Controller 호출
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
                 if (callback) {
@@ -88,7 +88,7 @@ var listPost = (function() {
 
         $.ajax({
             type : 'put',
-            url : PostUrl+'/team/' + param.team_num+'/board/' +param.board_num+ '/post/' +param.post_num,
+            url : PostUrl+'/team/' + param.teamNum+'/board/' +param.boardNum+ '/post/' +param.postNum,
             data : JSON.stringify(post), //post객체 전달
             contentType : "application/json; charset=utf-8",
             success : function(updateResult, status, xhr) {
@@ -111,7 +111,7 @@ var listPost = (function() {
 
         $.ajax({
             type : 'delete',
-            url : PostUrl+'/team/' + param.team_num+ '/board/' +param.board_num+ '/post/' +param.post_num,
+            url : PostUrl+'/team/' + param.teamNum+ '/board/' +param.boardNum+ '/post/' +param.postNum,
             contentType : "application/json; charset=utf-8",
             success : function(deleteResult, status, xhr) {
                 if (callback) {

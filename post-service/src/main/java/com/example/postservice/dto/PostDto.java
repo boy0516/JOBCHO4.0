@@ -3,6 +3,7 @@ package com.example.postservice.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 public class PostDto implements Serializable {
@@ -13,4 +14,5 @@ public class PostDto implements Serializable {
     private Integer boardNum;
     private Integer memberNum;
     private String writer;
+    private Date postDate;
 }
