@@ -50,7 +50,11 @@ public class PostServiceImpl implements PostService {
     //게시글 리스트 조회
     @Override
     public Page<PostEntity> getListPost(Integer boardNum, Pageable pageable){
-        return postRepository.findListByBoardNum(boardNum, pageable);
+
+        Page postList = postRepository.findByBoardNum(boardNum, pageable);
+        log.info("service 게시글 리스트 반환: "+postList.getContent());
+
+        return postList;
     }
 
     //게시글 상세조회

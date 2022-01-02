@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,23 +59,29 @@ public class PostController {
 
     /*게시글 리스트 조회*/
     @PostMapping("")
-    public ResponseEntity<HashMap<Object, Object>> getListPost(@PathVariable("board_num") Integer boardNum,
-                                                               @RequestBody Criteria cri, Pageable pageable){
+    public ResponseEntity<HashMap<Object,Object>> getListPost(@PathVariable("board_num") Integer boardNum,
+                                                               @RequestBody Criteria cri){
+
+        //임시 데이터
+        cri.setAmount(3);
+        Integer num = cri.getPageNum() -1;
 
         //페이징 처리
+        Pageable pageRequest = PageRequest.of(num, 3, Sort.by(Sort.Direction.DESC, "postNum"));
 
-        Page<PostEntity> postList = postService.getListPost(boardNum, pageable);
+        Page<PostEntity> postList = postService.getListPost(boardNum, pageRequest);
+
 
         PageInfo page = new PageInfo(cri, postList.getTotalElements());
 
-        log.info("게시글 리스트 요청: " + postList.getContent());
 
         HashMap<Object, Object> map = new HashMap<Object, Object>();
         map.put("getListPost", postList); //게시글 목록
         map.put("pageMaker", page);
         //map.put("board", boardService.getBoard(board_num)); //게시판 정보
 
-        log.info("게시글 리스트 반환: "+postList);
+
+        log.info("게시글 리스트 반환: "+postList.getContent());
         return ResponseEntity.status(HttpStatus.OK).body(map);
     }
 
