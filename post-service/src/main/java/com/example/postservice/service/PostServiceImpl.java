@@ -10,18 +10,13 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 
 @Service
 @Slf4j
 public class PostServiceImpl implements PostService {
+
 
     PostRepository postRepository;
 
@@ -92,6 +87,29 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long postNum){
         postRepository.deleteById(postNum);
     }
-	
 
+
+    //특정 게시글 댓글 수 업데이트
+    @Override
+    public void updateReplyCnt(Long postNum) {
+        PostEntity postEntity = postRepository.findByPostNum(postNum);
+
+        //댓글 수 +1 증가
+        postEntity.setReplyCnt(postEntity.getReplyCnt() +1);
+
+        //변경사항 저장
+        postRepository.save(postEntity);
+    }
+
+    //특정 게시글 댓글 수 -1
+    @Override
+    public void deleteReplyCnt(Long postNum) {
+        PostEntity postEntity = postRepository.findByPostNum(postNum);
+
+        //댓글 수 -1
+        postEntity.setReplyCnt(postEntity.getReplyCnt() -1);
+
+        //변경사항 저장
+        postRepository.save(postEntity);
+    }
 }

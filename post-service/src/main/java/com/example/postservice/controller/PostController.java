@@ -38,7 +38,7 @@ public class PostController {
 
     /*게시글 생성*/
     @PostMapping("/new")
-    public ResponseEntity<String> createOrder(@PathVariable("board_num") Integer boardNum,
+    public ResponseEntity<String> createPost(@PathVariable("board_num") Integer boardNum,
                                                     @RequestBody RequestPost requestPost) {
         log.info("Before 게시글 생성: " + requestPost.getPostContents());
         ModelMapper mapper = new ModelMapper();
@@ -133,6 +133,30 @@ public class PostController {
         return new ResponseEntity<>("삭제 완료", HttpStatus.OK);
     }
 
+
+    /**
+     * 특정 게시글 댓글 수 +1
+     */
+    @PostMapping("/{post_num}")
+    public ResponseEntity<String> updateReplyCnt(@PathVariable("post_num") Long postNum){
+
+        log.info("게시글 댓글 수 증가: " + postNum);
+        postService.updateReplyCnt(postNum);
+
+        return new ResponseEntity<>("댓글 수 +1 완료", HttpStatus.OK);
+    }
+
+    /**
+     * 특정 게시글 댓글 수 -1
+     */
+    @PostMapping("/reply/{post_num}")
+    public ResponseEntity<String> deleteReplyCnt(@PathVariable("post_num") Long postNum){
+
+        log.info("게시글 댓글 수 -1: " + postNum);
+        postService.deleteReplyCnt(postNum);
+
+        return new ResponseEntity<>("댓글 수 -1 완료", HttpStatus.OK);
+    }
 
 
 }

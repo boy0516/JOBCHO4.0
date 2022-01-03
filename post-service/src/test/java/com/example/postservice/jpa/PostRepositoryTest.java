@@ -44,8 +44,7 @@ class PostRepositoryTest {
         for (PostEntity member : content) {
             System.out.println("결과!! : " + member);
         }
-        long totalElemets = page.getTotalElements();
-        System.out.println(totalElemets);
+
 
     }
 }

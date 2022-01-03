@@ -70,6 +70,14 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+        - id: reply-service
+          uri: lb://REPLY-SERVICE
+          predicates:
+            - Path=/reply-service/**
+            - Method=GET, POST, PUT, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/reply-service/(?<segment>.*), /$\{segment}
 management:
   endpoints:
     web:

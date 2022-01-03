@@ -906,7 +906,7 @@
                 </div>
                 <div class="form-group">
                     <label>작성자</label>
-                    <input class="form-control" type="text"  name='reply_writer' value=<sec:authentication property="principal.users.user_name"/> readonly="readonly">
+                    <input class="form-control" type="text"  name='reply_writer' value='권도현' readonly="readonly">
                 </div>
                 <div class="form-group">
                     <label>작성 시간</label>
@@ -1273,7 +1273,7 @@
         //var user_name = $("#user_name").val(); //현재 로그인한 user_name
         var user_name = '권도현';
 
-        console.log("유저번호: " + user_name)
+        console.log("유저이름: " + user_name)
 
         //게시판 목록 호출
         showList();
@@ -1624,7 +1624,7 @@
         //---------댓글 리스트 불러오기---------
         function getListReply(){
 
-            replyService.getListReply({pno:postNum}, function(list){ //reply.js 호출
+            replyService.getListReply({postNum:postNum}, function(list){ //reply.js 호출
                 var str ="";
                 console.log("댓글리스트 호출");
                 //댓글이 없을 경우
@@ -1633,10 +1633,10 @@
                     return;
                 }
                 for (var i = 0, len = list.length || 0; i < len; i++) {
-                    str +="<li class='left clearfix' id='replyUpdate' data-reply_num='"+list[i].reply_num+"'>";
-                    str +="  <div><div class='header'><strong class='primary-font'>"+list[i].reply_writer+"</strong>";
-                    str +="    <small class='pull-right text-muted'>"+replyService.replyTime(list[i].reply_date)+"</small></div>";
-                    str +="    <p>"+list[i].reply_contents+"</p></div></li>";
+                    str +="<li class='left clearfix' id='replyUpdate' data-reply_num='"+list[i].replyNum+"'>";
+                    str +="  <div><div class='header'><strong class='primary-font'>"+list[i].replyWriter+"</strong>";
+                    str +="    <small class='pull-right text-muted'>"+replyService.replyTime(list[i].replyDate)+"</small></div>";
+                    str +="    <p>"+list[i].replyContents+"</p></div></li>";
                 }
                 $(".chat").html(str);
             });
@@ -1897,10 +1897,10 @@
         replyRegisterBtn.on("click", function(e){
             console.log("댓글 등록");
             var reply = {
-                reply_contents: modalInputReply.val(),
-                member_num: member_num,
-                post_num: postNum,
-                reply_writer : modalInputReplyer.val()
+                replyContents: modalInputReply.val(),
+                memberNum: memberNum,
+                postNum: postNum,
+                replyWriter : modalInputReplyer.val()
             };
 
             replyService.insertReply(reply, function(result){ //reply.js 호출
@@ -1908,7 +1908,13 @@
                 alert("댓글이 등록되었습니다!");
                 replyModal.find("input").val(""); //입력항목 비우고
                 replyModal.modal("hide");	//모달창 닫기
+
                 getListReply(); //댓글등록 후 목록 갱신
+
+                //댓글이 추가되면 해당 게시글의 댓글 수 증가
+                listPost.updateReplyCnt({teamNum:teamNum, boardNum:boardNum, postNum:postNum}, function(result){
+                    console.log(result);
+                });
             });
         });
 
@@ -1916,29 +1922,29 @@
         //동적으로 생성된 댓글 이벤트 위임, 특정댓글 보기
         $(".row").on("click", "#replyUpdate", function(){
 
-            var reply_num = $(this).data("reply_num");
-            console.log("댓글 이벤트 위임" +reply_num);
+            var replyNum = $(this).data("reply_num");
+            console.log("댓글 이벤트 위임" +replyNum);
 
             //reply.js 호출
-            replyService.getReply(reply_num, function(reply){  //callback함수
+            replyService.getReply(replyNum, function(reply){  //callback함수
 
-                var reply_writer = reply.reply_writer; //유저,댓글 작성자 비교
+                var replyWriter = reply.replyWriter; //유저,댓글 작성자 비교
 
-                modalInputReply.val(reply.reply_contents);
-                modalInputReplyer.val(reply.reply_writer);
-                modalInputReplyDate.val(replyService.replyTime(reply.reply_date)).attr("readonly", "readonly");
-                replyModal.data("reply_num", reply.reply_num);
+                modalInputReply.val(reply.replyContents);
+                modalInputReplyer.val(reply.replyWriter);
+                modalInputReplyDate.val(replyService.replyTime(reply.replyDate)).attr("readonly", "readonly");
+                replyModal.data("replyNum", reply.replyNum);
 
                 replyModal.find("button[id != 'replyCloseBtn']").hide();
 
-                console.log("댓글 작성자 비교: " + reply_writer );
+                console.log("댓글 작성자 비교: " + replyWriter );
                 console.log("유저  비교: " + user_name );
 
                 replyModBtn.show(); //수정버튼 활성화
                 replyRemoveBtn.show();//삭제버튼 활성화
 
                 //로그인한 유저와 댓글 작성자가 같으면 모달 보여주기
-                if(reply_writer == user_name){
+                if(replyWriter == user_name){
                     replyModal.modal("show");
                 }
             });
@@ -1951,24 +1957,30 @@
                 alert("취소되었습니다!")
                 replyModal.modal("hide");
             }
-            var reply_num = replyModal.data("reply_num");
+            var replyNum = replyModal.data("replyNum");
 
             //reply.js 호출
-            replyService.deleteReply(reply_num, function(result){
+            replyService.deleteReply(replyNum, function(result){
 
                 alert("댓글이 삭제되었습니다!");
                 replyModal.modal("hide");
 
                 getListReply(); //댓글 삭제 후 댓글목록 갱신
-
                 console.log("댓글 삭제");
+
+                //댓글이 삭제되면 해당 게시글의 댓글 수 -1
+                listPost.deleteReplyCnt({teamNum:teamNum, boardNum:boardNum, postNum:postNum}, function(result){
+                    console.log(result);
+                });
+
+
             });
         });
 
         //특정 댓글 수정
         replyModBtn.on("click", function(){
 
-            var reply = {reply_num: replyModal.data("reply_num"), reply_contents: modalInputReply.val() };
+            var reply = {replyNum: replyModal.data("replyNum"), replyContents: modalInputReply.val() };
             console.log("댓글 수정내용: "+modalInputReply.val());
 
             //reply.js 호출
