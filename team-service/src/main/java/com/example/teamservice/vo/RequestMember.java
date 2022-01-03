@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseMember {
-    private int memberNum;
+public class RequestMember {
     private int userNum;
-    private int teamNum;
     private String memberName;
     private String memberPosition;
-    private String profileName;
 }

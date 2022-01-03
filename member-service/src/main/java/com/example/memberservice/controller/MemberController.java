@@ -5,6 +5,7 @@ import com.example.memberservice.jpa.MemberEntity;
 import com.example.memberservice.service.MemberService;
 import com.example.memberservice.vo.RequestMember;
 import com.example.memberservice.vo.ResponseMember;
+import com.example.memberservice.vo.ResponseUser;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/team/{team_num}/member/")
+@RequestMapping("/team/{team_num}/member")
 @Slf4j
 public class MemberController {
 
@@ -89,12 +90,12 @@ public class MemberController {
     }
 //
 //    //	get: /team/{team_num}/members/withoutmember => 멤버 초대를 위해 이미 초대된 멤버를 제외한 유저 정보
-//    @GetMapping("/withoutmember")
-//    public ResponseEntity<List<UsersVO>> getListWithoutMembers(@PathVariable("team_num") int team_num){
-//        List<UsersVO> searchList = service.getListWithoutMembers(team_num);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(searchList);
-//    }
+    @GetMapping("/withoutmember")
+    public ResponseEntity<List<ResponseUser>> getListWithoutMembers(@PathVariable("team_num") int team_num){
+        List<ResponseUser> result = memberService.getListWithoutMembers(team_num);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 //
 //
 //    @GetMapping("/withoutchatmember")

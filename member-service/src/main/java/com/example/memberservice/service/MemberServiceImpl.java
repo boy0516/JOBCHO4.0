@@ -1,8 +1,11 @@
 package com.example.memberservice.service;
 
+import com.example.memberservice.client.UserServiceClient;
 import com.example.memberservice.dto.MemberDto;
+import com.example.memberservice.dto.UserDto;
 import com.example.memberservice.jpa.MemberEntity;
 import com.example.memberservice.jpa.MemberRepository;
+import com.example.memberservice.vo.ResponseUser;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    UserServiceClient userServiceClient;
 
     @Override
     public List<MemberDto> getListMember(int team_num) {
@@ -84,10 +90,30 @@ public class MemberServiceImpl implements MemberService {
         return 1;
     }
 //
-//    @Override
-//    public List<UsersVO> getListWithoutMembers(int team_num) {
-//        return null;
-//    }
+    @Override
+    public List<ResponseUser> getListWithoutMembers(int team_num) {
+        Iterable<MemberEntity> memberEntities = memberRepository.findByTeamNumAndIsLive(team_num,1);
+        List<UserDto> userDtoList = userServiceClient.getUserList();
+        log.info(String.valueOf(userDtoList));
+        log.info(String.valueOf(memberEntities));
+        List<ResponseUser> responseUserList = new ArrayList<>();
+
+        memberEntities.forEach(v->{
+            for(int i=0; i<userDtoList.size(); i++) {
+                if (userDtoList.get(i).getUserNum() == v.getUserNum()){
+                    userDtoList.remove(i);
+                    break;
+                }
+            }
+        });
+
+        log.info(String.valueOf(userDtoList));
+        userDtoList.forEach(v->{
+            responseUserList.add(new ModelMapper().map(v, ResponseUser.class));
+        });
+        log.info(String.valueOf(responseUserList));
+        return responseUserList;
+    }
 //
 
 //

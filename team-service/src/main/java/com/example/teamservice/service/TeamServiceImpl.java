@@ -1,10 +1,14 @@
 package com.example.teamservice.service;
 
+import com.example.teamservice.client.MemberServiceClient;
+import com.example.teamservice.client.UserServiceClient;
 import com.example.teamservice.dto.TeamDto;
 import com.example.teamservice.jpa.TeamEntity;
 import com.example.teamservice.jpa.TeamRepository;
+import com.example.teamservice.vo.RequestMember;
 import com.example.teamservice.vo.ResponseTeam;
 import com.example.teamservice.vo.RequestTeam;
+import com.example.teamservice.vo.ResponseUser;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -28,8 +32,17 @@ public class TeamServiceImpl implements TeamService{
         this.teamRepository = teamRepository;
     }
 
+    @Autowired
+    MemberServiceClient memberServiceClient;
+
+    @Autowired
+    UserServiceClient userServiceClient;
+
     @Override
     public int insertTeam(TeamDto teamDto) {
+
+        RequestMember requestMember= new RequestMember();
+
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         log.info("팀vo"+teamDto);
@@ -39,11 +52,19 @@ public class TeamServiceImpl implements TeamService{
             return 0;
         }
         TeamEntity postedEntity = teamRepository.save(teamEntity);
+
+        ResponseUser responseUser = userServiceClient.getUser(teamDto.getUserNum());
+        requestMember.setMemberName(responseUser.getUserName());
+        requestMember.setUserNum(teamDto.getUserNum());
+        requestMember.setMemberPosition("팀장");
+        memberServiceClient.insertMember(postedEntity.getTeamNum(),requestMember);
+
         return postedEntity!=null?1:0;
     }
 
     @Override
     public Iterable<TeamEntity> getListTeam(int user_num) {
+
         return teamRepository.findByUserNumAndIsLive(user_num,1);
     }
 

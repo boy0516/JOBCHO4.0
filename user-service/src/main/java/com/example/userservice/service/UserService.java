@@ -1,6 +1,12 @@
 package com.example.userservice.service;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
+import com.example.userservice.dto.UserDto;
+import com.example.userservice.vo.ResponseUser;
 
-public interface UserService extends UserDetailsService {
+import java.util.List;
+
+
+public interface UserService{
+    int insertUser(UserDto userDto);
+    UserDto getUser(int userNum);
 }
