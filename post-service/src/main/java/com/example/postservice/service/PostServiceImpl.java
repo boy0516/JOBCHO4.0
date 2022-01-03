@@ -4,21 +4,19 @@ package com.example.postservice.service;
 import com.example.postservice.dto.PostDto;
 import com.example.postservice.jpa.PostEntity;
 import com.example.postservice.jpa.PostRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.util.Optional;
-import java.util.UUID;
 
 
 @Service
+@Slf4j
 public class PostServiceImpl implements PostService {
+
 
     PostRepository postRepository;
 
@@ -47,14 +45,20 @@ public class PostServiceImpl implements PostService {
     //게시글 리스트 조회
     @Override
     public Page<PostEntity> getListPost(Integer boardNum, Pageable pageable){
-        return postRepository.findListByBoardNum(boardNum, pageable);
+
+        Page postList = postRepository.findByBoardNum(boardNum, pageable);
+        log.info("service 게시글 리스트 반환: "+postList.getContent());
+
+        return postList;
     }
 
     //게시글 상세조회
     @Override
     public PostDto getPost(Long postNum){
         PostEntity postEntity = postRepository.findByPostNum(postNum);
+        log.info("게시글 상세정보 서비스: " +postEntity.getPostTitle());
         PostDto postDto = new ModelMapper().map(postEntity, PostDto.class);
+
 
         return postDto;
     }
@@ -67,7 +71,7 @@ public class PostServiceImpl implements PostService {
         PostEntity postEntity = postRepository.findByPostNum(postDto.getPostNum());
 
         postEntity.setPostTitle(postDto.getPostTitle());
-        postEntity.setPostContexts(postDto.getPostContexts());
+        postEntity.setPostContents(postDto.getPostContents());
 
         //변경사항 저장
         postRepository.save(postEntity);
@@ -83,6 +87,29 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long postNum){
         postRepository.deleteById(postNum);
     }
-	
 
+
+    //특정 게시글 댓글 수 업데이트
+    @Override
+    public void updateReplyCnt(Long postNum) {
+        PostEntity postEntity = postRepository.findByPostNum(postNum);
+
+        //댓글 수 +1 증가
+        postEntity.setReplyCnt(postEntity.getReplyCnt() +1);
+
+        //변경사항 저장
+        postRepository.save(postEntity);
+    }
+
+    //특정 게시글 댓글 수 -1
+    @Override
+    public void deleteReplyCnt(Long postNum) {
+        PostEntity postEntity = postRepository.findByPostNum(postNum);
+
+        //댓글 수 -1
+        postEntity.setReplyCnt(postEntity.getReplyCnt() -1);
+
+        //변경사항 저장
+        postRepository.save(postEntity);
+    }
 }

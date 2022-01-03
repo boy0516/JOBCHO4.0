@@ -54,6 +54,30 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/jobcho/(?<segment>.*), /$\{segment}
+        - id: post-service
+          uri: lb://POST-SERVICE
+          predicates:
+            - Path=/post-service/**
+            - Method=GET, POST, PUT, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/post-service/(?<segment>.*), /$\{segment}
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/**
+            - Method=GET, POST, PUT, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+        - id: reply-service
+          uri: lb://REPLY-SERVICE
+          predicates:
+            - Path=/reply-service/**
+            - Method=GET, POST, PUT, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/reply-service/(?<segment>.*), /$\{segment}
 management:
   endpoints:
     web:

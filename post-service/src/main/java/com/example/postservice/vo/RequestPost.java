@@ -7,7 +7,7 @@ public class RequestPost {
 
     private Long postNum;
     private String postTitle;
-    private String postContexts;
+    private String postContents;
     private Integer boardNum;
     private Integer memberNum;
     private String writer;
