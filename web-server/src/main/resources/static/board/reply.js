@@ -1,5 +1,5 @@
 
-const ReplyUrl = "http://127.0.0.1:8000/reply-service";
+//const ReplyUrl = "http://127.0.0.1:8000/reply-service";
 
 var replyService = (function() {
 
@@ -9,7 +9,7 @@ var replyService = (function() {
 
         $.ajax({
             type : 'post',
-            url : ReplyUrl+'/reply/new', //Restcontroller 호출
+            url : 'reply-service/reply/new', //Restcontroller 호출
             data : JSON.stringify(reply),
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr){
@@ -29,7 +29,7 @@ var replyService = (function() {
     //특정 게시글 댓글 리스트 불러오기
     function getListReply(param, callback, error) {
         console.log("댓글 리스트 불러오기");
-        $.getJSON(ReplyUrl+"/reply/post/" + param.postNum , //Restcontroller 호출
+        $.getJSON("reply-service/reply/post/" + param.postNum , //Restcontroller 호출
             function(data) {
 
                 if (callback) {
@@ -45,7 +45,7 @@ var replyService = (function() {
     //특정 댓글 조회
     function getReply(replyNum, callback, error) {
         console.log("특정 댓글 클릭");
-        $.get(ReplyUrl+"/reply/" + replyNum, function(result) {
+        $.get("reply-service/reply/" + replyNum, function(result) {
 
             if (callback) {
                 callback(result);
@@ -66,7 +66,7 @@ var replyService = (function() {
 
         $.ajax({
             type : 'put',
-            url : ReplyUrl+'/reply/' + reply.replyNum, //controller 호출
+            url : 'reply-service/reply/' + reply.replyNum, //controller 호출
             data : JSON.stringify(reply),
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr){
@@ -88,7 +88,7 @@ var replyService = (function() {
 
         $.ajax({
             type : 'delete',
-            url : ReplyUrl+'/reply/' + replyNum,
+            url : 'reply-service/reply/' + replyNum,
             success : function(deleteResult, status, xhr) {
                 if (callback) {
                     callback(deleteResult);

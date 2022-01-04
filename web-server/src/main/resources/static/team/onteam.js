@@ -2,7 +2,7 @@
  * 
  */
 $(document).ready(function(){
-	const apiurl="http://127.0.0.1:8000/team-service"
+	//const apiurl="http://127.0.0.1:8000/team-service"
 	var user_num=1;
 	
 	function showTeamList(result){
@@ -60,19 +60,19 @@ $(document).ready(function(){
 		console.log("aaaa");
 	
 		$.ajax({
-			url:apiurl+"/team/"+team_num+"/member/"+user_num,
+			url:"team-service/team/"+team_num+"/member/"+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
 	        	console.log(result);
-	        	location.href="/team/main?team_num="+team_num+"&member_num="+result.member_num;
+	        	location.href="team-service/team/main?team_num="+team_num+"&member_num="+result.member_num;
 	        }
 		})
 	}
 	
 	function showUpdateTeamInfo(team_num){
 		$.ajax({
-	        url:apiurl+'/team/'+user_num,
+	        url:'team-service/team/'+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
@@ -90,7 +90,7 @@ $(document).ready(function(){
 	
 	function updateTeamAction(){
 		$.ajax({
-            url:apiurl+'/team/'+$("#updateTeamNum").val(),
+            url:'team-service/team/'+$("#updateTeamNum").val(),
             type:'put',
             contentType:'application/json',
             data: JSON.stringify(
@@ -111,7 +111,7 @@ $(document).ready(function(){
 	
 	function getTeamList(){
 		$.ajax({
-	        url:apiurl+'/team/'+user_num,
+	        url:'team-service/team/'+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
@@ -133,7 +133,7 @@ $(document).ready(function(){
 			$('#updataTeamInfoModal').modal("hide");
 		}else{
 			$.ajax({
-				url : apiurl+'/team/'+$('#updateTeamNum').val(),
+				url : 'team-service/team/'+$('#updateTeamNum').val(),
 				type : "delete",
 				contentType : "application/json",
 				success : function(data){
@@ -170,7 +170,7 @@ $(document).ready(function(){
 			}
 		 
 		 $.ajax({
-				url : apiurl+'/team/'+user_num,
+				url : 'team-service/team/'+user_num,
 				type : "post",
 				contentType : "application/json",
 				data : JSON.stringify({

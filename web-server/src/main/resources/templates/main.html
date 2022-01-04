@@ -46,21 +46,10 @@
           href="/jobcho/chat/css/dragableChat.css">
 
     <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
-    <script
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="/jobcho/main/css/sidebar-search.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
-    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
-    <script src="/jobcho/main/css/sidebar-right.js"></script>
-    <script src="/jobcho/main/css/sidebar-left.js"></script>
-    <script src="/jobcho/members/js/todoList.js"></script>
-    <script src="/jobcho/chat/js/onchat.js"></script>
-    <script src="/jobcho/chat/js/dragable.js"></script>
-    <script src="/jobcho/board/board.js?version=20211227"></script>
-    <script src="/jobcho/post/post.js?version=20211217"></script>
-    <script src="/jobcho/board/reply.js?version=20211217"></script>
-    <script src="/jobcho/members/js/vote.js"></script>
-    <script src="/jobcho/members/js/memberProfile.js"></script>
+
+
 </head>
 <body>
 
@@ -925,20 +914,21 @@
 </div>
 
 
+<script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+<script src="/jobcho/main/css/sidebar-search.js"></script>
+<script src="/jobcho/main/css/sidebar-right.js"></script>
+<script src="/jobcho/main/css/sidebar-left.js"></script>
+<script src="/jobcho/members/js/todoList.js"></script>
+<script src="/jobcho/chat/js/onchat.js"></script>
+<script src="/jobcho/chat/js/dragable.js"></script>
+<script src="/jobcho/board/board.js?version=20211227"></script>
+<script src="/jobcho/post/post.js?version=20211217"></script>
+<script src="/jobcho/board/reply.js?version=20211217"></script>
+<script src="/jobcho/members/js/vote.js"></script>
+<script src="/jobcho/members/js/memberProfile.js"></script>
 
 
-<!-- 외부js에 변수 전달 -->
-<input type="hidden" id="userName"
-       value="<sec:authentication property="principal.users.user_name"/>">
-<input type="hidden" id="user_name"
-       value="<sec:authentication property="principal.users.user_name"/>">
 
-<input type="hidden" id="userNum"
-       value="<sec:authentication property="principal.users.user_num"/>">
-
-<input type="hidden" id="teamNum" value=${param.team_num }>
-
-<input type="hidden" id="memberNum" value=${param.member_num }>
 
 
 
