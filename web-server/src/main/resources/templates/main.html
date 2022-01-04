@@ -46,8 +46,10 @@
           href="/jobcho/chat/css/dragableChat.css">
 
     <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
-    <script
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+
+
 </head>
 <body>
 
@@ -924,25 +926,24 @@
 <script src="/jobcho/board/reply.js?version=20211217"></script>
 <script src="/jobcho/members/js/vote.js"></script>
 <script src="/jobcho/members/js/memberProfile.js"></script>
+<script src="/jobcho/main/js/member.js"></script>
 
 
 
-<script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
-<script src="/jobcho/main/css/sidebar-search.js"></script>
-<script src="/jobcho/main/css/sidebar-right.js"></script>
-<script src="/jobcho/main/css/sidebar-left.js"></script>
-<script src="/jobcho/members/js/todoList.js"></script>
-<script src="/jobcho/chat/js/onchat.js"></script>
-<script src="/jobcho/chat/js/dragable.js"></script>
-<script src="/jobcho/board/board.js?version=20211227"></script>
-<script src="/jobcho/post/post.js?version=20211217"></script>
-<script src="/jobcho/board/reply.js?version=20211217"></script>
-<script src="/jobcho/members/js/vote.js"></script>
-<script src="/jobcho/members/js/memberProfile.js"></script>
 
 
 
 <script type="text/javascript">
+
+    //security ajax를 사용하면 403에러가 발생하기 때문에 아래와 같은 코드를 작성해야됨
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+
+    $.ajaxPrefilter(function(options, originalOptions, jqXHR){
+        if (options['type'].toLowerCase() === "post") {
+            jqXHR.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+        }
+    });
+
 
     //오늘의 할일 추가 모달 이벤트
     $(document).on("click","#createToDo" ,function(e){
@@ -965,16 +966,544 @@
 
 
 
+<!-- 게시판 스크립트 부분 -->
+<script>
+    $(document).ready(function(){
+        var memberNum = 1; //member_num 필요
+        //var team_num =$("#teamNum").val();
+        var teamNum = 1;
+        var boardUL = $("#board"); //게시판 리스트 들어가는 부분
+        var user_num = $("#userNum").val();
+        //var user_name = $("#user_name").val(); //현재 로그인한 user_name
+        var user_name = '권도현';
+
+        console.log("유저이름: " + user_name)
+
+        //게시판 목록 호출
+        showList();
+
+        function showList(){
+
+            listBoard.getListBoard({teamNum:teamNum}, function(board){ //board.js 호출
+
+                console.log("게시판 목록 callback: " +teamNum );
+                var str ="";
+
+                for(var i = 0; i < board.length; i++){
+                    str +="<a href='"+board[i].boardNum+"' class='nav__link-left'>"; //board_num 유지,전달
+                    str +="<ion-icon name='home-outline' class='nav__icon-left'></ion-icon>";
+                    str +="<span class='nav__name-left'>"+board[i].boardName+"</span>"; //게시판이름 출력
+                    str +="</a>";
+
+                }
+                boardUL.html(str);
+            });
+        }
+
+//==========Modal==========
+        //모달창에 입력한 데이터 값 저장
+        var boardModal = $("#boardModal");
+        var modalInputBoardName = boardModal.find("input[name='board_name']");
+        var modalInputBoardInfo = boardModal.find("input[name='board_info']");
+
+        var modalRegisterBtn = $("#modalRegisterBtn");
+        var modalModBtn = $("#modalModBtn");
+
+        //모달창 닫기 버튼
+        $("#modalCloseBtn").on("click", function(e){
+
+            boardModal.modal('hide');
+        });
+
+        //게시판 생성 버튼 + 클릭시 모달창을 보여준다.
+        $("#createBoard").on("click", function(e){
+
+            console.log("게시판 생성 모달창");
+            e.preventDefault(); // a태그 기본이벤트 삭제
+
+            boardModal.find("input").val("");
+            /* modalInputReplyDate.closest("div").hide(); */
+            boardModal.find("button[id !='modalCloseBtn']").hide(); //close버튼이 아니면 숨기기
+
+            modalRegisterBtn.show();
+            /* modalInputReplyDate.show();*/
+
+            $("#createBoard").modal("show");
+
+        }); // end createBoard
+
+
+        //게시판 생성
+        modalRegisterBtn.on("click", function(e){
+
+            //모달에 입력받은 값 저장
+            var board = {
+                boardName: modalInputBoardName.val(),
+                boardInfo: modalInputBoardInfo.val(),
+                memberNum: 1
+            };
+            console.log("게시판 생성!: " + modalInputBoardName.val() );
+
+            listBoard.insertBoard(board,{teamNum:teamNum},  function(result){ //board.js 호출
+                alert("게시판이 생성되었습니다.");
+
+                boardModal.modal("hide");
+
+                showList(); //생성 후 다시 목록 갱신
+            });
+        });
+
+        //======게시판 데이터 저장=======
+        var boardNum = ""; //ok
+        var boardName =""; //ok
+        var boardInfo =""; //ok
+        var pageNum = "";
+        var postNum = "";
+
+        //게시글 목록 메서드
+        function getListPost(cri){
+
+            //post.js- getListPost 메서드 호출
+            listPost.getListPost(cri, {teamNum:teamNum, boardNum:boardNum}, function(map){ //map으로 리턴받는다.
+
+                console.log("게시글 목록 callback!!: " + map);
+                // boardName = map.board.boardName;
+                // boardInfo = map.board.boardInfo;
+                var str ="";
+                var str1="";
+                var str4="";
+
+                //게시글 기본틀 출력하는 부분
+                str1 = `<div class="row" style="margin-top: 60px">
+							<div class="col-sm-7" style="margin-left: 450px">
+							<h1 class="page-header">게시글 테스트</h1>
+							</div>
+							</div>
+						<div class="col-sm-7" style="margin-left: 450px">
+						  <div class="panel panel-default">
+						  <div class="panel-heading">게시글 테스트
+						<button id='regBtn' type="button" class="btn btn-primary btn-xs pull-right">글쓰기</button>
+						</div>
+					<div class="panel-body">
+						<table class="table table-striped table-bordered table-hover">
+							<thead>
+								<tr>
+									<th>번호</th>
+									<th>제목</th>
+									<th>작성자</th>
+									<th>작성일</th>
+								</tr>
+							</thead>
+							<tbody id="post-list">
+
+							</tbody>
+						</table>
+						<div class='row'>
+						<div class="col-sm-7">
+								<select name='type' id='type'>
+									<option value=''>--</option>
+									<option value='T'>제목</option>
+									<option value='C'>내용</option>
+									<option value='W'>작성자</option>
+								</select>
+								<input type='text' id='keyword' value="" />
+								<button class='btn btn-default' id='search'>검색</button>
+					</div>
+						<div class='pull-right' style="margin-right: 20px">
+						<ul class="pagination" id="page">
+
+						</ul>
+						</div>
+					</div>
+					</div>
+					</div>`+str1;
+
+                //게시글 목록 출력하는 부분
+                if(!map.pageMaker.total == 0){ //게시판에 게시글이 존재하지 않으면 실행하지 않는다.
+                    for(var i = 0; i < map.getListPost.content.length; i++){
+                        str +="<tr><td>"+map.getListPost.content[i].postNum+"</td>";
+                        str +="<td>";
+                        str +="<a class='move' href='"+map.getListPost.content[i].postNum+"'>"+map.getListPost.content[i].postTitle+"<b>["+map.getListPost.content[i].replyCnt+"]</b></a>";
+                        str +="</td>";
+                        str +="<td>"+map.getListPost.content[i].writer+"</td>";
+                        str +="<td>"+map.getListPost.content[i].postDate+"</td>";
+                        str +="</tr>";
+                    }
+                }
+
+                //게시글 페이지 처리
+                var prev = map.pageMaker.startPage -1;
+                var next = map.pageMaker.endPage +1;
+
+                if(map.pageMaker.prev){
+                    str4 = `<li class="paginate_button previous"><a href=`+prev+`>이전</a></li>`+str4;
+                    console.log("prev if문 실행: "+ str4);
+                }
+
+                //클릭한 페이지 번호 표시하기
+                for(var num = map.pageMaker.startPage; num <= map.pageMaker.endPage; num++){
+
+                    if(map.pageMaker.cri.pageNum == num){
+                        console.log("페이지 번호 표시");
+                        str4 += "<li class='paginate_button active'>";
+                        str4 +=	"<a href='"+num+"''>"+num+"</a>";
+                        str4 +="</li>";
+                    }else{
+                        str4 += "<li class='paginate_button'>";
+                        str4 +=	"<a href='"+num+"''>"+num+"</a>";
+                        str4 +="</li>";
+                    }
+                }
+
+                if(map.pageMaker.next){
+                    str4 += "<li class='paginate_button next'><a href='"+next+"'>이후</a></li>";
+                    console.log("next if문 실행: "+ next);
+                }
+
+                $(".row").html(str1);
+                $("#post-list").html(str);
+                $("#page").html(str4);
+            });
+
+        } //end getListPost
 
 
 
+        //게시판 이름 클릭시 게시글 출력(비동기식 전환)
+        $("#board").on("click", "a", function(e){
+
+            //클릭한 게시판 번호저장
+            boardNum = $(this).attr("href");
+
+            //기본 이벤트 삭제
+            e.preventDefault();
+
+            //페이지 정보
+            var cri = {};
+
+            //게시글 목록 불러오기
+            getListPost(cri);
+        });
+
+
+        // 검색 시 해당 키워드와 타입으로 리스트를 불러온다.
+        $(".row").on("click", "#search", function(e){
+
+            var name = document.getElementById('type');
+            var type = name.options[name.selectedIndex].value; //option type 저장
+            var keyword = document.getElementById('keyword').value; //input keyword 저장
+
+            console.log('선택된 옵션 value 값=' + type);
+            console.log('선택된 옵션 keyword 값=' + keyword);
+
+            //검색종류 선택안하고 검색버튼 클릭 시
+            if(!type){
+                alert("검색 종류를 선택해주세요!");
+                console.log("검색 종류 입력X");
+                return false;
+            }
+
+            //키워드 선택안하고 검색버튼 클릭 시
+            if(!keyword){
+                alert("키워드를 입력해주세요!");
+                console.log("키워드 입력X");
+                return false;
+            }
+
+            var cri = {
+                type: type,
+                keyword: keyword
+            }
+
+            //게시글 목록 불러오기
+            getListPost(cri);
+        });
+
+
+        //페이지 번호 클릭 시 이벤트 처리
+        $(".row").on("click", ".paginate_button a", function(e){
+
+            pageNum = $(this).attr("href");
+            console.log("페이지 이벤트 적용: "+pageNum);
+
+            //기본 이벤트 삭제
+            e.preventDefault();
+
+            //페이지 정보
+            var cri = {
+                pageNum: pageNum,
+                amount: 10
+            };
+
+            //게시글 목록 불러오기
+            getListPost(cri);
+
+        });
 
 
 
-    <!-- 게시판 스크립트 부분 -->
-    <script>
-        $(document).ready(function(){
+        //게시글 상세조회
+        $(".row").on("click", ".move", function(e){
 
+            //클릭한 게시글 번호 저장
+            postNum = $(this).attr("href");
+            console.log("리스트에서 상세조회로 전달: " +postNum);
+
+            //기본 이벤트 삭제
+            e.preventDefault();
+
+            //post.js- getPost 메서드 호출
+            listPost.getPost({teamNum:teamNum, boardNum:boardNum, postNum:postNum}, function(post){
+                console.log("게시글 상세조회 callback: " +post.postTitle );
+                console.log("팀번호: "+teamNum+ "게시판번호: " +boardNum  );
+                var str ="";
+                var str5 ="";
+
+                str = `	<div class="row" style="margin-top: 60px">
+					  		<div class="col-sm-7" style="margin-left: 450px">
+					   	 	<h1 class="page-header">`+boardName+`</h1>
+					  		</div>
+							</div>
+					     <div class="col-sm-7" style="margin-left: 450px">
+				   	 	<div class="panel panel-default">
+				      	<div class="panel-heading">`+boardInfo+` </div>
+				      	<div class="panel-body">
+				          <div class="form-group">
+				          <label>글 번호</label> <input class="form-control" name='post_num'
+				            value=`+post.postNum+` readonly="readonly">
+				        </div>
+				        <div class="form-group">
+				          <label>제목</label>
+				          <textarea class="form-control" rows="1" name='post_title'
+					            readonly="readonly"> `+post.postTitle+` </textarea>
+				        </div>
+				        <div class="form-group">
+				          <label>내용</label>
+				          <textarea class="form-control" rows="3" name='post_contents'
+				            readonly="readonly"> `+post.postContents+` </textarea>
+				        </div>
+				        <div class="form-group">
+				          <label>작성자</label> <input class="form-control" name='writer'
+				            value= `+post.writer+` readonly="readonly">
+				        </div>
+							<div id='modify'>
+
+							</div>
+							<br><br><br><br>
+							<div class='row'>
+							<div class="col-lg-12">
+							<div class="panel panel-default">
+							<div class="panel-heading">
+							<i class="fa fa-comments fa-fw"></i> 댓글
+							<button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>댓글 쓰기</button>
+							</div>
+							<div class="panel-body">
+							       <ul class="chat">
+
+							      </ul>
+							</div>
+							<div class="panel-footer"></div>
+							</div>
+							</div>
+							</div>
+						</div>
+				    		</div>
+				  		</div>`+str;
+
+                if(user_name == post.writer){
+                    str5 = `<button data-oper='modify' class="btn btn-info">수정</button>
+				  						<button data-oper='list' class="btn btn-default">목록</button>`+str5;
+                    console.log("수정버튼 활성화");
+                }else{
+                    str5 =`<button data-oper='list' class="btn btn-default">목록</button>`
+                }
+
+                $(".row").html(str);
+                $("#modify").html(str5);
+                getListReply();	//댓글 리스트 호출
+            });
+        }); // end getPost
+
+
+        //---------댓글 리스트 불러오기---------
+        function getListReply(){
+
+            replyService.getListReply({postNum:postNum}, function(list){ //reply.js 호출
+                var str ="";
+                console.log("댓글리스트 호출");
+                //댓글이 없을 경우
+                if(list == null || list.length == 0){
+                    $(".chat").html("");
+                    return;
+                }
+                for (var i = 0, len = list.length || 0; i < len; i++) {
+                    str +="<li class='left clearfix' id='replyUpdate' data-reply_num='"+list[i].replyNum+"'>";
+                    str +="  <div><div class='header'><strong class='primary-font'>"+list[i].replyWriter+"</strong>";
+                    str +="    <small class='pull-right text-muted'>"+replyService.replyTime(list[i].replyDate)+"</small></div>";
+                    str +="    <p>"+list[i].replyContents+"</p></div></li>";
+                }
+                $(".chat").html(str);
+            });
+        }//end getListReply
+
+
+        //상세조회에서 목록버튼 클릭 시 다시 리스트로 돌아간다.
+        $(".row").on("click", "button[data-oper='list']", function(e){
+
+            //페이지 번호를 클릭하지 않은채 목록으로 갈때 오류해결
+            if(!pageNum){
+                var cri = {pageNum:1, amount: 10};
+                console.log("페이지번호 없음");
+            }else{
+                var cri = {pageNum:pageNum, amount: 10};
+            }
+
+            //게시글 목록 불러오기
+            getListPost(cri);
+        });
+
+
+        // '글쓰기' 버튼 클릭 시 작성폼 띄우기
+        $(".row").on("click", "#regBtn", function(e){
+            var str="";
+            console.log("글쓰기 버튼 클릭");
+
+            str = `<div class="row" style="margin-top: 60px">
+							<div class="col-sm-7" style="margin-left: 450px">
+							<h1 class="page-header">`+boardName+`</h1>
+							</div>
+							</div>
+							<div class="col-sm-7" style="margin-left: 450px">
+		    				<div class="panel panel-default">
+		    				<div class="panel-heading">`+boardInfo+`</div>
+		      				<div class="panel-body">
+       						<div class="form-group">
+         					<label>제목</label> <input class="form-control" id="form-control1" name='post_title'>
+       						</div>
+       						<div class="form-group">
+         					<label>내용</label>
+         					<textarea class="form-control" id="form-control2" rows="7" name='post_contents'></textarea>
+       						</div>
+       						<div class="form-group">
+         					<label>작성자</label> <input class="form-control" id="form-control3" type="text" name='writer' value= '권도현' readonly="readonly">
+       						</div>
+       						<button id='submit' class="btn btn-primary">등록</button>
+       						<button id='reset' type="reset" class="btn btn-default">취소</button>
+ 							</div>
+ 							</div>
+							</div>`+str;
+
+            $(".row").html(str);
+
+
+        });
+
+
+        // 게시글 생성. 작성한 폼 Ajax요청
+        $(".row").on("click", "#submit", function(e){
+
+            var postTitle =  document.getElementById('form-control1').value;
+            var postContents = document.getElementById('form-control2').value;
+            var writer = document.getElementById('form-control3').value;
+
+            console.log("게시글 생성" + postTitle);
+
+            var post = {
+                postTitle: postTitle,
+                postContents: postContents,
+                memberNum: memberNum,
+                writer: writer
+            };
+
+            //post.js-insertPost 호출
+            listPost.insertPost(post, {teamNum:teamNum, boardNum:boardNum}, function(result){
+                console.log("게시글 생성 callback" + result);
+
+                if(result == "success"){
+                    alert("게시글이 등록되었습니다.");
+                }
+
+                //페이지 정보
+                var cri = {pageNum:1, amount: 10};
+
+                //게시글 목록 불어오기
+                getListPost(cri);
+
+            }); // end insertPost
+        }); // end event
+
+
+
+        //글쓰기에서 취소버튼 클릭 시 다시 리스트로 돌아간다.
+        $(".row").on("click", "#reset", function(e){
+            console.log("글쓰기에서 다시 리스트로");
+
+            //페이지 번호를 클릭하지 않은채 목록으로 갈때 오류해결
+            if(!pageNum){
+                var cri = {pageNum:1, amount: 10};
+                console.log("페이지번호 없음");
+            }else{
+                var cri = {pageNum:pageNum, amount: 10};
+            }
+
+            //게시글 목록 불어오기
+            getListPost(cri);
+
+        }); //end 글쓰기에서 리스트
+
+
+        // 상세조회에서 수정버튼 클릭 시 수정폼으로 이동
+        $(".row").on("click", "button[data-oper='modify']", function(e){
+            console.log("게시글 수정폼으로 이동: " + postNum);
+
+            //수정 전 게시글 번호에 해당하는 게시글을 가져와 보여준다.
+            listPost.getPost({teamNum:teamNum, boardNum:boardNum, postNum:postNum}, function(post){
+
+                var str ="";
+                str = `<div class="row" style="margin-top: 60px">
+								<div class="col-sm-7" style="margin-left: 450px">
+								<h1 class="page-header">`+boardName+`</h1>
+								</div>
+								</div>
+								<div class="col-sm-7" style="margin-left: 450px">
+								<div class="panel panel-default">
+								<div class="panel-heading">게시글 수정</div>
+								<div class="panel-body">
+									<div class="form-group">
+										<label>글 번호</label>
+										<input class="form-control" name='post_num' value=`+post.postNum+` readonly="readonly">
+									</div>
+									<div class="form-group">
+										<label>제목</label>
+										<textarea class="form-control" id="post_title" rows="1" name='post_contents'>`+post.postTitle+`</textarea>
+									</div>
+									<div class="form-group">
+										<label>내용</label>
+										<textarea class="form-control"  id="post_contents" rows="3" name='post_contents'>`+post.postContents+`</textarea>
+									</div>
+									<div class="form-group">
+										<label>작성자</label>
+										<input class="form-control" name='writer' value=`+user_name+` readonly="readonly">
+									</div>
+									<div class="form-group">
+										<label>작성일</label>
+										<input class="form-control" name='post_date' value=`+post.postDate+` readonly="readonly">
+									</div>
+									<button data-oper='modify2' class="btn btn-info">수정</button>
+									<button data-oper='remove' class="btn btn-danger">삭제</button>
+									<button data-oper='list' class="btn btn-default">취소</button>
+							</div>
+							</div>
+							</div>` +str;
+
+                $(".row").html(str);
+            });
+        }); // end 수정폼이동
+
+
+
+        //수정폼에서 수정버튼을 클릭하면 변경된 데이터 Ajax 요청
+        $(".row").on("click", "button[data-oper='modify2']", function(e){
 
             if(!confirm("게시글을 수정하시겠습니까?")){
                 alert("취소되었습니다!");
@@ -1195,9 +1724,9 @@
 
             }
             console.log("실행3");
-        };//end showProfile
+        }//end showProfile
 
-    // }); //end document.ready1
+    }); //end document.ready1
 </script>
 
 
