@@ -2,7 +2,8 @@
 $(document).ready(function(){
 	function setHome(){
 			var str = `<div id="calendar"></div>`;
-			
+
+			$(".row").html("");
 			$(".job-team-body").html(str);
 			var calendarEl = document.getElementById("calendar");
 			console.log(calendarEl);

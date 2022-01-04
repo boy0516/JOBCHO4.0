@@ -153,12 +153,7 @@
 
 
 
-<!-- 게시글 시작 -->
-<div class="row" style="margin-top: 60px">
 
-
-</div>
-<!-- 게시글 끝  -->
 
 
 
@@ -459,7 +454,7 @@
 <div class="body-content" id="body-pd-left">
     <div class="job-team-body2"></div>
 
-
+    <div class="job-team-body3"></div>
     <div class="job-team-body">
 
     </div>
@@ -926,6 +921,7 @@
 <script src="/jobcho/board/reply.js?version=20211217"></script>
 <script src="/jobcho/members/js/vote.js"></script>
 <script src="/jobcho/members/js/memberProfile.js"></script>
+<script src="/jobcho/main/js/member.js"></script>
 
 
 
@@ -961,293 +957,6 @@
         $('#logoutForm').submit();
     });
 
-</script>
-
-
-<script>
-    //멤버리스트와 수정모달
-    $(document).ready(function(){
-        //초대할 유저 검색 리스트
-        var searchUserList = null;
-
-        //현재 팀 넘버
-        var team_num= ${param.team_num};
-
-        //로그인한 유저 넘버
-        var user_num=$("#userNum").val();
-
-        //컨텐츠바디에 현재팀의 멤버리스트 출력
-        function showMemberList(result){
-            str=""
-            console.log("멤버리스트 출력")
-            var teamMaster = result[0].team.user_num;
-            console.log(user_num+"and"+teamMaster)
-            //팀장일때
-            if(user_num==teamMaster){
-                result.forEach(function(item){
-                    if(item.user.user_num==user_num){
-                        str =`<div class="job-container">
-                                <div class="team-profile-image" style="background-image: url('/display?filename=`+item.profile_name+`');"></div>
-                                <div class="team-profile-info">
-                                    <p class="team-profile-name">`+item.user.user_name+`</p>
-                                    <p class="team-profile-email">`+item.user.user_email+`</p>
-                                    <p class="team-profile-email">`+item.user.user_phoneNum+`</p>
-                                    <p class="team-profile-email">`+item.member_position+`</p>
-                                </div>
-                                <div class="team-btn">
-                                    <button class="updataAdminModal" value="`+item.member_num+`">수정</button>
-                                    <button class="updataTeamModal" value="`+item.member_num+`">팀설정</button>
-                                </div>
-                            </div>`+str;
-
-                    }else{
-                        str +=`<div class="job-container">
-                                <div class="team-profile-image" style="background-image: url('/display?filename=`+item.profile_name+`');"></div>
-                                <div class="team-profile-info">
-                                    <p class="team-profile-name">`+item.user.user_name+`</p>
-                                    <p class="team-profile-email">`+item.user.user_email+`</p>
-                                    <p class="team-profile-email">`+item.user.user_phoneNum+`</p>
-                                    <p class="team-profile-email">`+item.member_position+`</p>
-                                </div>
-                                <div class="team-btn">
-                                    <button class="updataAdminModal" value="`+item.member_num+`">수정</button>
-                                </div>
-                            </div>`;
-                    }
-
-
-                });
-                $(".job-team-body").html(str);
-                //팀원일때
-            }else{
-                result.forEach(function(item){
-                    if(item.user.user_num==user_num){
-                        str =`<div class="job-container">
-                                <div class="team-profile-image" style="background-image: url('/display?filename=`+item.profile_name+`');"></div>
-                                <div class="team-profile-info">
-                                    <p class="team-profile-name">`+item.user.user_name+`</p>
-                                    <p class="team-profile-email">`+item.user.user_email+`</p>
-                                    <p class="team-profile-email">`+item.user.user_phoneNum+`</p>
-                                    <p class="team-profile-email">`+item.member_position+`</p>
-                                </div>
-                                <div class="team-btn">
-                                    <button class="updataModal" value="`+item.member_num+`">수정</button>
-                                </div>
-                            </div>`+str;
-                    }else{
-                        str +=`<div class="job-container">
-                                <div class="team-profile-image" style="background-image: url('/display?filename=`+item.profile_name+`');"></div>
-                                <div class="team-profile-info">
-                                    <p class="team-profile-name">`+item.user.user_name+`</p>
-                                    <p class="team-profile-email">`+item.user.user_email+`</p>
-                                    <p class="team-profile-email">`+item.user.user_phoneNum+`</p>
-                                    <p class="team-profile-email">`+item.member_position+`</p>
-                                </div>
-                            </div>`;
-                    }
-
-                })
-                $(".job-team-body").html(str);
-            };
-        };
-        //현재 팀의 멤버 리스트 재출력
-        function reloadMemberList(){
-            $.ajax({
-                url:'/team/'+team_num+'/member',
-                type:'Get',
-                processData:false,
-                contentType:'application/json',
-                dataType:'json',
-                success:function(result){
-
-                    console.log(result);
-
-                    showMemberList(result);
-
-                }
-            });
-        };
-
-        //초대할 수 있는 유저 리스트 보여줌
-        function showUserSearchList(result){
-            str=""
-            result.forEach(function(item){
-
-                str +=`<li class="list-group-item">
-                                        <div class="thumnail-profile"></div>
-                                        `+item.user_name+"__"+item.user_email+`<button id="inviteMember" class="badge " value="`+item.user_num+`">초대</button>
-                                    </li>`
-
-            })
-            $("#invite-list-group").html(str);
-        }
-
-        //초대할 수 있는 유저 리스트를 불러옴
-        function showUserSearchListAction(){
-            $.ajax({
-                url:'/team/'+team_num+'/member/withoutmember',
-                type:'Get',
-                processData:false,
-                contentType:'application/json',
-
-                dataType:'json',
-                success:function(result){
-                    searchUserList= result
-                    console.log(result);
-                    showUserSearchList(result);
-                }
-            });//$.ajax
-        }
-
-        $("#toggle-key-member").on("click",function(){
-            //처음 페이지 로드 시 멤버 리스트 호출
-            reloadMemberList();
-        })
-
-
-        //수정하고싶은 멤버의 번호 초기화
-        var updataMemberNum=0;
-
-        //팀장의 멤버 정보 수정 모달 호출
-        $(document).on("click",".updataAdminModal" ,function(e){
-            $("#updataAdminModal").modal("show");
-            updataMemberNum = this.value
-        });
-
-        //팀원의 멤버 정보 수정 모달 호출
-        $(document).on("click",".updataModal" ,function(e){
-            $("#updataModal").modal("show");
-            updataMemberNum = this.value
-        });
-
-        //팀장의 팀 정보 수정 모달 호출
-        $(document).on("click",".updataTeamModal" ,function(e){
-            $("#updataTeamModal").modal("show");
-            updataMemberNum = this.value
-        });
-
-        //멤버 정보 수정 모달에서 수정엑션
-        $("#updateMemberAction").on("click", function(e){
-            console.log({"member_position":$(".updatePosition").val()})
-            var position = $(".updatePosition").val()
-
-            $.ajax({
-                url:'/team/'+team_num+'/member/'+updataMemberNum,
-                type:'put',
-
-                contentType:'application/json',
-                data: JSON.stringify({"member_position":position}),
-                dataType: 'json',
-                success:function(result){
-                    alert("수정완료")
-                    $("#updataAdminModal").modal("hide");
-                    console.log(result);
-                    reloadMemberList();
-                }
-            });
-
-
-        });
-
-        $("#updateMemberAction").on("click", function(e){
-            var file = $(this).parent().parent().find("input[name='uploadFile']")[0].files;
-            console.log($(this).parent().parent().find("input[name='uploadFile']")[0].files)
-            $(this).parent().find("input[name='uploadFile']").clone();
-
-            console.log( file)
-            var formData = new FormData();
-            for(var i = 0; i<file.length; i++){
-                formData.append("uploadFile", file[i])
-            }
-            $.ajax({
-                url:'/team/'+team_num+'/member/'+updataMemberNum+'/uploadprofile',
-                type:'Post',
-                processData:false,
-                contentType:false,
-                data:formData,
-                success:function(result){
-                    console.log(result)
-                    console.log("upload succss");
-
-                }
-            });// $.ajax
-        });
-
-        //초대할 유저검색 모달 호출
-        $("#inviteSearch").on("click", function(){
-            showUserSearchListAction();
-        });
-
-        //멤버 초대 모달에서 유저를 멤버로 초대
-        $(document).on("click","#inviteMember",function(){
-            console.log("초대 실행")
-            $.ajax({
-                url:'/team/'+team_num+'/member/invite',
-                type:'Post',
-                processData:false,
-                contentType:'application/json',
-                data:JSON.stringify({"member_position": "",
-                    "team_num": team_num,
-                    "user_num": this.value}),
-                dataType:'json',
-                success:function(result){
-
-                    console.log(result);
-                    alert("초대완료")
-                    searchUserList = result;
-                    showUserSearchListAction();
-
-                }
-            });//$.ajax
-
-        });
-
-        //멤버초대 모달 닫기 + 현재 팀의 멤버 리스트 재출력
-        $("#inviteModalClose").on("click",function(){
-            console.log("모달 닫음")
-            reloadMemberList();
-        });
-
-        //멤버 초대 모달의 검색바에서 검색어와 일치하는 유저 검색
-        $('#inviteUserSearchbar').keyup(function(){
-            var keyword = $(this).val()
-            var str=""
-            searchUserList.forEach(function(user,index){
-                console.log(index);
-                console.log(user);
-                console.log();
-                if(((keyword==user.user_email.substr(0,keyword.length))||(keyword==user.user_name.substr(0,keyword.length)))&& keyword.length!=0){
-                    str +=`<li class="list-group-item">
-                            <div class="thumnail-profile"></div>
-                            `+user.user_name+"__"+user.user_email+`<button id="inviteMember" class="badge " value="`+user.user_num+`">초대</button>
-                        </li>`
-
-                };
-            });
-
-            $("#invite-list-group").html(str);
-        });
-
-        //멤버탈퇴
-        $('#deleteMemberAction').on('click', function(){
-
-            var msg = "팀을 탈퇴하시겠습니까?"
-
-            var flag = confirm(msg);
-
-            if(flag){
-                $.ajax({
-                    url:'/team/'+team_num+'/member/'+updataMemberNum,
-                    type:'delete',
-                    dataType:'json',
-                    success:function(result){
-                        console.log(result);
-                        alert("탈퇴되었습니다")
-                    }
-                });//$.ajax
-            }
-        });
-    });//끝
 </script>
 
 
@@ -1360,7 +1069,10 @@
                 var str4="";
 
                 //게시글 기본틀 출력하는 부분
-                str1 = `<div class="row" style="margin-top: 60px">
+                str1 = `<!-- 게시글 시작 -->
+
+
+<div class="row" style="margin-top: 60px">
 							<div class="col-sm-7" style="margin-left: 450px">
 							<h1 class="page-header">게시글 테스트</h1>
 							</div>
@@ -1402,7 +1114,8 @@
 						</div>
 					</div>
 					</div>
-					</div>`+str1;
+
+                    </div>`+str1;
 
                 //게시글 목록 출력하는 부분
                 if(!map.pageMaker.total == 0){ //게시판에 게시글이 존재하지 않으면 실행하지 않는다.
@@ -1446,6 +1159,7 @@
                     console.log("next if문 실행: "+ next);
                 }
 
+                $(".job-team-body").html("");
                 $(".row").html(str1);
                 $("#post-list").html(str);
                 $("#page").html(str4);
@@ -1604,7 +1318,8 @@
                     str5 =`<button data-oper='list' class="btn btn-default">목록</button>`
                 }
 
-                $(".row").html(str);
+                $(".job-team-body").html("");
+                $(".job-team-body3").html(str);
                 $("#modify").html(str5);
                 getListReply();	//댓글 리스트 호출
             });
@@ -1679,8 +1394,9 @@
  							</div>
 							</div>`+str;
 
-            $(".row").html(str);
 
+            $(".job-team-body").html("");
+            $(".job-team-body3").html(str);
 
         });
 
@@ -1782,7 +1498,8 @@
 							</div>
 							</div>` +str;
 
-                $(".row").html(str);
+                $(".job-team-body").html("");
+                $(".job-team-body3").html(str);
             });
         }); // end 수정폼이동
 

@@ -2,6 +2,8 @@ package com.example.memberservice.jpa;
 
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +12,8 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "member",uniqueConstraints = {@UniqueConstraint(columnNames = {"userNum","teamNum"})})
+@DynamicInsert
+@DynamicUpdate
 public class MemberEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +26,7 @@ public class MemberEntity implements Serializable {
     @Column(nullable = false)
     private String memberName;
     @Column(nullable = false)
+    @ColumnDefault(value = "'팀원'")
     private String memberPosition;
 
     @Column(nullable = false, insertable = false)
@@ -32,6 +37,7 @@ public class MemberEntity implements Serializable {
     @ColumnDefault(value = "CURRENT_TIMESTAMP")
     private Date createAt;
 
-    @Column(columnDefinition = "varchar(255) default 'default.jpg'")
+    @Column(nullable = false)
+    @ColumnDefault(value = "'default.jpg'")
     private String profileName;
 }
