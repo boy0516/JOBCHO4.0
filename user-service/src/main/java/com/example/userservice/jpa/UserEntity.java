@@ -19,7 +19,7 @@ public class UserEntity implements Serializable {
     private String userName;
     @Column(nullable = false)
     private String userPhoneNum;
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String userEmail;
     @Column(nullable = false)
     private String userPw;

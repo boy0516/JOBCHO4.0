@@ -8,8 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 
 
 @Service
@@ -19,12 +24,29 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByUserEmail(userEmail);
+
+        if(userEntity == null){
+            throw new UsernameNotFoundException(userEmail);
+        }
+        return new User(userEntity.getUserEmail(), userEntity.getUserPw(),
+                true, true, true, true,
+                new ArrayList<>());
+    }
+
     @Override
     public int insertUser(UserDto userDto) {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         UserEntity userEntity = mapper.map(userDto, UserEntity.class);
+        userEntity.setUserPw(passwordEncoder.encode(userDto.getUserPw()));
         log.info(String.valueOf(userEntity));
+
         userRepository.save(userEntity);
         return 0;
     }

@@ -48,19 +48,8 @@
     <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
     <script
             src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="/jobcho/main/css/sidebar-search.js"></script>
-
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
-    <script src="/jobcho/main/css/sidebar-right.js"></script>
-    <script src="/jobcho/main/css/sidebar-left.js"></script>
-    <script src="/jobcho/members/js/todoList.js"></script>
-    <script src="/jobcho/chat/js/onchat.js"></script>
-    <script src="/jobcho/chat/js/dragable.js"></script>
-    <script src="/jobcho/board/board.js?version=20211227"></script>
-    <script src="/jobcho/post/post.js?version=20211217"></script>
-    <script src="/jobcho/board/reply.js?version=20211217"></script>
-    <script src="/jobcho/members/js/vote.js"></script>
-    <script src="/jobcho/members/js/memberProfile.js"></script>
+
 </head>
 <body>
 
@@ -927,40 +916,23 @@
 
 
 
-<!-- 외부js에 변수 전달 -->
-<input type="hidden" id="userName"
-       value="<sec:authentication property="principal.users.user_name"/>">
-<input type="hidden" id="user_name"
-       value="<sec:authentication property="principal.users.user_name"/>">
 
-<input type="hidden" id="userNum"
-       value="<sec:authentication property="principal.users.user_num"/>">
+<script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+<script src="/jobcho/main/css/sidebar-search.js"></script>
+<script src="/jobcho/main/css/sidebar-right.js"></script>
+<script src="/jobcho/main/css/sidebar-left.js"></script>
+<script src="/jobcho/members/js/todoList.js"></script>
+<script src="/jobcho/chat/js/onchat.js"></script>
+<script src="/jobcho/chat/js/dragable.js"></script>
+<script src="/jobcho/board/board.js?version=20211227"></script>
+<script src="/jobcho/post/post.js?version=20211217"></script>
+<script src="/jobcho/board/reply.js?version=20211217"></script>
+<script src="/jobcho/members/js/vote.js"></script>
+<script src="/jobcho/members/js/memberProfile.js"></script>
 
-<input type="hidden" id="teamNum" value=${param.team_num }>
 
-<input type="hidden" id="memberNum" value=${param.member_num }>
-
-
-    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
-    <script src="/jobcho/main/css/sidebar-right.js"></script>
-    <script src="/jobcho/main/css/sidebar-left.js"></script>
-    <script src="/jobcho/members/js/todoList.js"></script>
-    <script src="/jobcho/chat/js/onchat.js"></script>
-    <script src="/jobcho/chat/js/dragable.js"></script>
-    <script src="/jobcho/board/board.js?version=20211206"></script>
-    <script src="/jobcho/members/js/vote.js"></script>
-    <script src="/jobcho/members/js/memberProfile.js"></script>
-    <script src="/jobcho/main/js/member.js"></script>
-    <!-- 외부js에 변수 전달 -->
-    <input type="hidden" id="userName"
-           value="<sec:authentication property="principal.users.user_name"/>">
 
 <script type="text/javascript">
-
-    <input type="hidden" id="teamNum" value='${param.team_num}'>
-
-    <input type="hidden" id="memberNum" value='${param.member_num}'>
-
 
     //오늘의 할일 추가 모달 이벤트
     $(document).on("click","#createToDo" ,function(e){
@@ -982,19 +954,7 @@
 </script>
 
 
-<script>
-    //멤버리스트와 수정모달
-    $(document).ready(function(){
-        //초대할 유저 검색 리스트
-        var searchUserList = null;
 
-        //현재 팀 넘버
-        var team_num= ${param.team_num};
-
-        //로그인한 유저 넘버
-        var user_num=$("#userNum").val();
-
-    </script>
 
 
 
@@ -1004,10 +964,7 @@
     <!-- 게시판 스크립트 부분 -->
     <script>
         $(document).ready(function(){
-            var member_num = ${param.member_num };
-            var team_num =$("#teamNum").val();
-            var boardUL = $("#board"); //게시판 리스트 들어가는 부분
-            var user_num = $("#userNum").val();
+
 
             if(!confirm("게시글을 수정하시겠습니까?")){
                 alert("취소되었습니다!");
@@ -1228,9 +1185,9 @@
 
             }
             console.log("실행3");
-        }//end showProfile
+        };//end showProfile
 
-    }); //end document.ready1
+    // }); //end document.ready1
 </script>
 
 

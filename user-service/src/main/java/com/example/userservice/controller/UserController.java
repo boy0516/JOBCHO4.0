@@ -57,7 +57,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(responseUser);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/signup")
     public ResponseEntity<RequestUser> insertUser(@RequestBody RequestUser requestUser){
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -66,6 +66,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(requestUser);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<RequestUser> loginUser(){
+        return null;
+    }
 
 }
 
