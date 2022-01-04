@@ -1,5 +1,5 @@
 
-const ReplyUrl = "http://127.0.0.1:8000/reply-service";
+//const ReplyUrl = "http://127.0.0.1:8000/reply-service";
 
 var replyService = (function() {
 

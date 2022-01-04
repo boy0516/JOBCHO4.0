@@ -1,6 +1,6 @@
 console.log("board.js 호출");
 
-const boardUrl = "http://127.0.0.1:8000/board-service";
+//const boardUrl = "http://127.0.0.1:8000/board-service";
 
 var listBoard = (function() {
 
@@ -11,7 +11,7 @@ var listBoard = (function() {
 
         $.ajax({
             type : 'get',
-            url : "/team/" +param.teamNum+ "/board/", //Controller 호출
+            url : "board-service/team/" +param.teamNum+ "/board/", //Controller 호출
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
                 if (callback) {
@@ -42,7 +42,7 @@ var listBoard = (function() {
 
         $.ajax({
             type : 'post',
-            url : "/team/"+ teamNum +"/board/new", //team번호 전달
+            url : "board-service/team/"+ teamNum +"/board/new", //team번호 전달
             data : JSON.stringify(board), //board객체 전달
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr) {
@@ -66,7 +66,7 @@ var listBoard = (function() {
 
         $.ajax({
             type : 'delete',
-            url : '/team/' + param.team_num+'/board/' +param.board_num,
+            url : 'board-service/team/' + param.team_num+'/board/' +param.board_num,
             success : function(deleteResult, status, xhr) {
                 if (callback) {
                     callback(deleteResult);

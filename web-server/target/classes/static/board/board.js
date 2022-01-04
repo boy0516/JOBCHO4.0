@@ -1,6 +1,6 @@
 console.log("board.js 호출");
 
-const boardUrl = "http://127.0.0.1:8000/board-service";
+//const boardUrl = "http://127.0.0.1:8000/board-service";
 
 var listBoard = (function() {
 

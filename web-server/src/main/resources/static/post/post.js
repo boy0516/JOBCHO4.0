@@ -1,6 +1,6 @@
 console.log("post.js 호출");
 
-const PostUrl = "http://127.0.0.1:8000/post-service";
+//const PostUrl = "http://127.0.0.1:8000/post-service";
 
 var listPost = (function() {
 
@@ -11,7 +11,7 @@ var listPost = (function() {
 
         $.ajax({
             type : 'post',
-            url : "/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post", //Controller 호출
+            url : "post-service/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post", //Controller 호출
             data : JSON.stringify(cri), //post객체 전달
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
@@ -33,7 +33,7 @@ var listPost = (function() {
 
         $.ajax({
             type : 'get',
-            url : "/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/" +param.postNum, //Controller 호출
+            url : "post-service/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/" +param.postNum, //Controller 호출
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
                 if (callback) {
@@ -66,7 +66,7 @@ var listPost = (function() {
 
         $.ajax({
             type : 'post',
-            url : "/team/"+ param.teamNum +"/board/"+param.boardNum+"/post/new", //team,board번호 전달
+            url : "post-service/team/"+ param.teamNum +"/board/"+param.boardNum+"/post/new", //team,board번호 전달
             data : JSON.stringify(post), //post객체 전달
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr) {
@@ -88,7 +88,7 @@ var listPost = (function() {
 
         $.ajax({
             type : 'put',
-            url : '/team/' + param.teamNum+'/board/' +param.boardNum+ '/post/' +param.postNum,
+            url : 'post-service/team/' + param.teamNum+'/board/' +param.boardNum+ '/post/' +param.postNum,
             data : JSON.stringify(post), //post객체 전달
             contentType : "application/json; charset=utf-8",
             success : function(updateResult, status, xhr) {
@@ -111,7 +111,7 @@ var listPost = (function() {
 
         $.ajax({
             type : 'delete',
-            url : '/team/' + param.teamNum+ '/board/' +param.boardNum+ '/post/' +param.postNum,
+            url : 'post-service/team/' + param.teamNum+ '/board/' +param.boardNum+ '/post/' +param.postNum,
             contentType : "application/json; charset=utf-8",
             success : function(deleteResult, status, xhr) {
                 if (callback) {
@@ -133,7 +133,7 @@ var listPost = (function() {
 
         $.ajax({
             type : 'post',
-            url : "/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/" +param.postNum, //Controller 호출
+            url : "post-service/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/" +param.postNum, //Controller 호출
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
                 if (callback) {
@@ -154,7 +154,7 @@ var listPost = (function() {
 
         $.ajax({
             type : 'post',
-            url : "/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/reply/" +param.postNum, //Controller 호출
+            url : "post-service/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/reply/" +param.postNum, //Controller 호출
             contentType : "application/json; charset=utf-8",
             success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
                 if (callback) {
