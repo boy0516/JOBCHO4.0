@@ -153,7 +153,12 @@
 
 
 
+<!-- 게시글 시작 -->
+<div class="row" style="margin-top: 60px">
 
+
+</div>
+<!-- 게시글 끝  -->
 
 
 
@@ -454,7 +459,7 @@
 <div class="body-content" id="body-pd-left">
     <div class="job-team-body2"></div>
 
-    <div class="job-team-body3"></div>
+
     <div class="job-team-body">
 
     </div>
@@ -1069,10 +1074,7 @@
                 var str4="";
 
                 //게시글 기본틀 출력하는 부분
-                str1 = `<!-- 게시글 시작 -->
-
-
-<div class="row" style="margin-top: 60px">
+                str1 = `<div class="row" style="margin-top: 60px">
 							<div class="col-sm-7" style="margin-left: 450px">
 							<h1 class="page-header">게시글 테스트</h1>
 							</div>
@@ -1114,8 +1116,7 @@
 						</div>
 					</div>
 					</div>
-
-                    </div>`+str1;
+					</div>`+str1;
 
                 //게시글 목록 출력하는 부분
                 if(!map.pageMaker.total == 0){ //게시판에 게시글이 존재하지 않으면 실행하지 않는다.
@@ -1159,7 +1160,7 @@
                     console.log("next if문 실행: "+ next);
                 }
                 $(".job-team-body").html("");
-                $(".job-team-body3").html(str1);
+                $(".row").html(str1);
                 $("#post-list").html(str);
                 $("#page").html(str4);
             });
@@ -1317,8 +1318,7 @@
                     str5 =`<button data-oper='list' class="btn btn-default">목록</button>`
                 }
 
-                $(".job-team-body").html("");
-                $(".job-team-body3").html(str);
+                $(".row").html(str);
                 $("#modify").html(str5);
                 getListReply();	//댓글 리스트 호출
             });
@@ -1393,9 +1393,8 @@
  							</div>
 							</div>`+str;
 
+            $(".row").html(str);
 
-            $(".job-team-body").html("");
-            $(".job-team-body3").html(str);
 
         });
 
@@ -1497,8 +1496,7 @@
 							</div>
 							</div>` +str;
 
-                $(".job-team-body").html("");
-                $(".job-team-body3").html(str);
+                $(".row").html(str);
             });
         }); // end 수정폼이동
 

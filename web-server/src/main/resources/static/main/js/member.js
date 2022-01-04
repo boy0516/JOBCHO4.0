@@ -57,7 +57,7 @@ $(document).ready(function(){
 
 
             });
-            $(".job-team-body3").html("");
+            $(".row").html("");
             $(".job-team-body").html(str);
             //팀원일때
         }else{
@@ -86,7 +86,7 @@ $(document).ready(function(){
                 }
 
             })
-            $(".job-team-body3").html("");
+            $(".row").html("");
             $(".job-team-body").html(str);
         };
     };
