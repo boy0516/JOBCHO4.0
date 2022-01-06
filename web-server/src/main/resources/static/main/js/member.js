@@ -1,11 +1,15 @@
 //멤버리스트와 수정모달
 $(document).ready(function(){
+
     function getParameter(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
+
+
+
     //초대할 유저 검색 리스트
     var searchUserList = null;
 
@@ -57,7 +61,7 @@ $(document).ready(function(){
 
 
             });
-            $(".job-team-body3").html("");
+            $(".row").html("");
             $(".job-team-body").html(str);
             //팀원일때
         }else{
@@ -86,7 +90,7 @@ $(document).ready(function(){
                 }
 
             })
-            $(".job-team-body3").html("");
+            $(".row").html("");
             $(".job-team-body").html(str);
         };
     };

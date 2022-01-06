@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <meta charset='utf-8'>
     <title>Page Title</title>
     <!-- fullcalendar CDN -->
@@ -153,7 +154,12 @@
 
 
 
+<!-- 게시글 시작 -->
+<div class="row" style="margin-top: 60px">
 
+
+</div>
+<!-- 게시글 끝  -->
 
 
 
@@ -454,7 +460,7 @@
 <div class="body-content" id="body-pd-left">
     <div class="job-team-body2"></div>
 
-    <div class="job-team-body3"></div>
+
     <div class="job-team-body">
 
     </div>
@@ -924,11 +930,22 @@
 <script src="/jobcho/main/js/member.js"></script>
 
 
-
-
-
-
 <script type="text/javascript">
+
+    function getParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    //팀, 멤버 번호 저장
+    var teamNum= getParameter("team_num");
+    var memberNum = getParameter("member_num");
+
+    console.log("팀번호: " + teamNum);
+    console.log("member번호: " + memberNum);
+
 
     //security ajax를 사용하면 403에러가 발생하기 때문에 아래와 같은 코드를 작성해야됨
     var csrfToken = $("meta[name='_csrf']").attr("content");
@@ -964,13 +981,10 @@
 <!-- 게시판 스크립트 부분 -->
 <script>
     $(document).ready(function(){
-        var memberNum = 1; //member_num 필요
-        //var team_num =$("#teamNum").val();
-        var teamNum = 1;
         var boardUL = $("#board"); //게시판 리스트 들어가는 부분
         var user_num = $("#userNum").val();
-        //var user_name = $("#user_name").val(); //현재 로그인한 user_name
         var user_name = '권도현';
+
 
         console.log("유저이름: " + user_name)
 
@@ -1035,7 +1049,7 @@
             var board = {
                 boardName: modalInputBoardName.val(),
                 boardInfo: modalInputBoardInfo.val(),
-                memberNum: 1
+                memberNum: memberNum
             };
             console.log("게시판 생성!: " + modalInputBoardName.val() );
 
@@ -1050,123 +1064,124 @@
 
         //======게시판 데이터 저장=======
         var boardNum = ""; //ok
-        var boardName =""; //ok
-        var boardInfo =""; //ok
+        var boardName = ""; //ok
+        var boardInfo = ""; //ok
         var pageNum = "";
         var postNum = "";
+
 
         //게시글 목록 메서드
         function getListPost(cri){
 
-            //post.js- getListPost 메서드 호출
-            listPost.getListPost(cri, {teamNum:teamNum, boardNum:boardNum}, function(map){ //map으로 리턴받는다.
+            //게시판 조회
+            listBoard.getBoard({teamNum:teamNum, boardNum:boardNum}, function(result){ //board.js 호출
 
-                console.log("게시글 목록 callback!!: " + map);
-                // boardName = map.board.boardName;
-                // boardInfo = map.board.boardInfo;
-                var str ="";
-                var str1="";
-                var str4="";
+                console.log("게시판 이름: " +result.boardName);
+                boardName = result.boardName;
+                boardInfo = result.boardInfo;
 
-                //게시글 기본틀 출력하는 부분
-                str1 = `<!-- 게시글 시작 -->
+                //post.js- getListPost 메서드 호출
+                listPost.getListPost(cri, {teamNum:teamNum, boardNum:boardNum}, function(map){ //map으로 리턴받는다.
 
+                    console.log("게시글 목록 callback!!: " + map);
 
-<div class="row" style="margin-top: 60px">
-							<div class="col-sm-7" style="margin-left: 450px">
-							<h1 class="page-header">게시글 테스트</h1>
-							</div>
-							</div>
-						<div class="col-sm-7" style="margin-left: 450px">
-						  <div class="panel panel-default">
-						  <div class="panel-heading">게시글 테스트
-						<button id='regBtn' type="button" class="btn btn-primary btn-xs pull-right">글쓰기</button>
-						</div>
-					<div class="panel-body">
-						<table class="table table-striped table-bordered table-hover">
-							<thead>
-								<tr>
-									<th>번호</th>
-									<th>제목</th>
-									<th>작성자</th>
-									<th>작성일</th>
-								</tr>
-							</thead>
-							<tbody id="post-list">
+                    var str ="";
+                    var str1="";
+                    var str4="";
 
-							</tbody>
-						</table>
-						<div class='row'>
-						<div class="col-sm-7">
-								<select name='type' id='type'>
-									<option value=''>--</option>
-									<option value='T'>제목</option>
-									<option value='C'>내용</option>
-									<option value='W'>작성자</option>
-								</select>
-								<input type='text' id='keyword' value="" />
-								<button class='btn btn-default' id='search'>검색</button>
-					</div>
-						<div class='pull-right' style="margin-right: 20px">
-						<ul class="pagination" id="page">
+                    //게시글 기본틀 출력하는 부분
+                    str1 = `<div class="row" style="margin-top: 60px">
+                     <div class="col-sm-7" style="margin-left: 450px">
+                     <h1 class="page-header">`+boardName+`</h1>
+                     </div>
+                     </div>
+                  <div class="col-sm-7" style="margin-left: 450px">
+                    <div class="panel panel-default">
+                    <div class="panel-heading">`+boardInfo+`
+                  <button id='regBtn' type="button" class="btn btn-primary btn-xs pull-right">글쓰기</button>
+                  </div>
+               <div class="panel-body">
+                  <table class="table table-striped table-bordered table-hover">
+                     <thead>
+                        <tr>
+                           <th>번호</th>
+                           <th>제목</th>
+                           <th>작성자</th>
+                           <th>작성일</th>
+                        </tr>
+                     </thead>
+                     <tbody id="post-list">
 
-						</ul>
-						</div>
-					</div>
-					</div>
+                     </tbody>
+                  </table>
+                  <div class='row'>
+                  <div class="col-sm-7">
+                        <select name='type' id='type'>
+                           <option value=''>--</option>
+                           <option value='T'>제목</option>
+                           <option value='C'>내용</option>
+                           <option value='W'>작성자</option>
+                        </select>
+                        <input type='text' id='keyword' value="" />
+                        <button class='btn btn-default' id='search'>검색</button>
+               </div>
+                  <div class='pull-right' style="margin-right: 20px">
+                  <ul class="pagination" id="page">
 
-                    </div>`+str1;
+                  </ul>
+                  </div>
+               </div>
+               </div>
+               </div>`+str1;
 
-                //게시글 목록 출력하는 부분
-                if(!map.pageMaker.total == 0){ //게시판에 게시글이 존재하지 않으면 실행하지 않는다.
-                    for(var i = 0; i < map.getListPost.content.length; i++){
-                        str +="<tr><td>"+map.getListPost.content[i].postNum+"</td>";
-                        str +="<td>";
-                        str +="<a class='move' href='"+map.getListPost.content[i].postNum+"'>"+map.getListPost.content[i].postTitle+"<b>["+map.getListPost.content[i].replyCnt+"]</b></a>";
-                        str +="</td>";
-                        str +="<td>"+map.getListPost.content[i].writer+"</td>";
-                        str +="<td>"+map.getListPost.content[i].postDate+"</td>";
-                        str +="</tr>";
+                    //게시글 목록 출력하는 부분
+                    if(!map.pageMaker.total == 0){ //게시판에 게시글이 존재하지 않으면 실행하지 않는다.
+                        for(var i = 0; i < map.getListPost.content.length; i++){
+                            str +="<tr><td>"+map.getListPost.content[i].postNum+"</td>";
+                            str +="<td>";
+                            str +="<a class='move' href='"+map.getListPost.content[i].postNum+"'>"+map.getListPost.content[i].postTitle+"<b>["+map.getListPost.content[i].replyCnt+"]</b></a>";
+                            str +="</td>";
+                            str +="<td>"+map.getListPost.content[i].writer+"</td>";
+                            str +="<td>"+map.getListPost.content[i].postDate+"</td>";
+                            str +="</tr>";
+                        }
                     }
-                }
 
-                //게시글 페이지 처리
-                var prev = map.pageMaker.startPage -1;
-                var next = map.pageMaker.endPage +1;
+                    //게시글 페이지 처리
+                    var prev = map.pageMaker.startPage -1;
+                    var next = map.pageMaker.endPage +1;
 
-                if(map.pageMaker.prev){
-                    str4 = `<li class="paginate_button previous"><a href=`+prev+`>이전</a></li>`+str4;
-                    console.log("prev if문 실행: "+ str4);
-                }
-
-                //클릭한 페이지 번호 표시하기
-                for(var num = map.pageMaker.startPage; num <= map.pageMaker.endPage; num++){
-
-                    if(map.pageMaker.cri.pageNum == num){
-                        console.log("페이지 번호 표시");
-                        str4 += "<li class='paginate_button active'>";
-                        str4 +=	"<a href='"+num+"''>"+num+"</a>";
-                        str4 +="</li>";
-                    }else{
-                        str4 += "<li class='paginate_button'>";
-                        str4 +=	"<a href='"+num+"''>"+num+"</a>";
-                        str4 +="</li>";
+                    if(map.pageMaker.prev){
+                        str4 = `<li class="paginate_button previous"><a href=`+prev+`>이전</a></li>`+str4;
+                        console.log("prev if문 실행: "+ str4);
                     }
-                }
 
-                if(map.pageMaker.next){
-                    str4 += "<li class='paginate_button next'><a href='"+next+"'>이후</a></li>";
-                    console.log("next if문 실행: "+ next);
-                }
+                    //클릭한 페이지 번호 표시하기
+                    for(var num = map.pageMaker.startPage; num <= map.pageMaker.endPage; num++){
 
-                $(".job-team-body").html("");
-                $(".row").html(str1);
-                $("#post-list").html(str);
-                $("#page").html(str4);
+                        if(map.pageMaker.cri.pageNum == num){
+                            console.log("페이지 번호 표시");
+                            str4 += "<li class='paginate_button active'>";
+                            str4 +=   "<a href='"+num+"''>"+num+"</a>";
+                            str4 +="</li>";
+                        }else{
+                            str4 += "<li class='paginate_button'>";
+                            str4 +=   "<a href='"+num+"''>"+num+"</a>";
+                            str4 +="</li>";
+                        }
+                    }
+
+                    if(map.pageMaker.next){
+                        str4 += "<li class='paginate_button next'><a href='"+next+"'>이후</a></li>";
+                        console.log("next if문 실행: "+ next);
+                    }
+                    $(".job-team-body").html("");
+                    $(".row").html(str1);
+                    $("#post-list").html(str);
+                    $("#page").html(str4);
+                });
             });
-
         } //end getListPost
-
 
 
         //게시판 이름 클릭시 게시글 출력(비동기식 전환)
@@ -1259,69 +1274,68 @@
                 var str ="";
                 var str5 ="";
 
-                str = `	<div class="row" style="margin-top: 60px">
-					  		<div class="col-sm-7" style="margin-left: 450px">
-					   	 	<h1 class="page-header">`+boardName+`</h1>
-					  		</div>
-							</div>
-					     <div class="col-sm-7" style="margin-left: 450px">
-				   	 	<div class="panel panel-default">
-				      	<div class="panel-heading">`+boardInfo+` </div>
-				      	<div class="panel-body">
-				          <div class="form-group">
-				          <label>글 번호</label> <input class="form-control" name='post_num'
-				            value=`+post.postNum+` readonly="readonly">
-				        </div>
-				        <div class="form-group">
-				          <label>제목</label>
-				          <textarea class="form-control" rows="1" name='post_title'
-					            readonly="readonly"> `+post.postTitle+` </textarea>
-				        </div>
-				        <div class="form-group">
-				          <label>내용</label>
-				          <textarea class="form-control" rows="3" name='post_contents'
-				            readonly="readonly"> `+post.postContents+` </textarea>
-				        </div>
-				        <div class="form-group">
-				          <label>작성자</label> <input class="form-control" name='writer'
-				            value= `+post.writer+` readonly="readonly">
-				        </div>
-							<div id='modify'>
+                str = `   <div class="row" style="margin-top: 60px">
+                       <div class="col-sm-7" style="margin-left: 450px">
+                         <h1 class="page-header">`+boardName+`</h1>
+                       </div>
+                     </div>
+                    <div class="col-sm-7" style="margin-left: 450px">
+                      <div class="panel panel-default">
+                     <div class="panel-heading">`+boardInfo+` </div>
+                     <div class="panel-body">
+                      <div class="form-group">
+                      <label>글 번호</label> <input class="form-control" name='post_num'
+                        value=`+post.postNum+` readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                      <label>제목</label>
+                      <textarea class="form-control" rows="1" name='post_title'
+                           readonly="readonly"> `+post.postTitle+` </textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>내용</label>
+                      <textarea class="form-control" rows="3" name='post_contents'
+                        readonly="readonly"> `+post.postContents+` </textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>작성자</label> <input class="form-control" name='writer'
+                        value= `+post.writer+` readonly="readonly">
+                    </div>
+                     <div id='modify'>
 
-							</div>
-							<br><br><br><br>
-							<div class='row'>
-							<div class="col-lg-12">
-							<div class="panel panel-default">
-							<div class="panel-heading">
-							<i class="fa fa-comments fa-fw"></i> 댓글
-							<button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>댓글 쓰기</button>
-							</div>
-							<div class="panel-body">
-							       <ul class="chat">
+                     </div>
+                     <br><br><br><br>
+                     <div class='row'>
+                     <div class="col-lg-12">
+                     <div class="panel panel-default">
+                     <div class="panel-heading">
+                     <i class="fa fa-comments fa-fw"></i> 댓글
+                     <button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>댓글 쓰기</button>
+                     </div>
+                     <div class="panel-body">
+                            <ul class="chat">
 
-							      </ul>
-							</div>
-							<div class="panel-footer"></div>
-							</div>
-							</div>
-							</div>
-						</div>
-				    		</div>
-				  		</div>`+str;
+                           </ul>
+                     </div>
+                     <div class="panel-footer"></div>
+                     </div>
+                     </div>
+                     </div>
+                  </div>
+                      </div>
+                    </div>`+str;
 
                 if(user_name == post.writer){
                     str5 = `<button data-oper='modify' class="btn btn-info">수정</button>
-				  						<button data-oper='list' class="btn btn-default">목록</button>`+str5;
+                                <button data-oper='list' class="btn btn-default">목록</button>`+str5;
                     console.log("수정버튼 활성화");
                 }else{
                     str5 =`<button data-oper='list' class="btn btn-default">목록</button>`
                 }
 
-                $(".job-team-body").html("");
-                $(".job-team-body3").html(str);
+                $(".row").html(str);
                 $("#modify").html(str5);
-                getListReply();	//댓글 리스트 호출
+                getListReply();   //댓글 리스트 호출
             });
         }); // end getPost
 
@@ -1370,33 +1384,32 @@
             console.log("글쓰기 버튼 클릭");
 
             str = `<div class="row" style="margin-top: 60px">
-							<div class="col-sm-7" style="margin-left: 450px">
-							<h1 class="page-header">`+boardName+`</h1>
-							</div>
-							</div>
-							<div class="col-sm-7" style="margin-left: 450px">
-		    				<div class="panel panel-default">
-		    				<div class="panel-heading">`+boardInfo+`</div>
-		      				<div class="panel-body">
-       						<div class="form-group">
-         					<label>제목</label> <input class="form-control" id="form-control1" name='post_title'>
-       						</div>
-       						<div class="form-group">
-         					<label>내용</label>
-         					<textarea class="form-control" id="form-control2" rows="7" name='post_contents'></textarea>
-       						</div>
-       						<div class="form-group">
-         					<label>작성자</label> <input class="form-control" id="form-control3" type="text" name='writer' value= '권도현' readonly="readonly">
-       						</div>
-       						<button id='submit' class="btn btn-primary">등록</button>
-       						<button id='reset' type="reset" class="btn btn-default">취소</button>
- 							</div>
- 							</div>
-							</div>`+str;
+                     <div class="col-sm-7" style="margin-left: 450px">
+                     <h1 class="page-header">`+boardName+`</h1>
+                     </div>
+                     </div>
+                     <div class="col-sm-7" style="margin-left: 450px">
+                      <div class="panel panel-default">
+                      <div class="panel-heading">`+boardInfo+`</div>
+                        <div class="panel-body">
+                         <div class="form-group">
+                        <label>제목</label> <input class="form-control" id="form-control1" name='post_title'>
+                         </div>
+                         <div class="form-group">
+                        <label>내용</label>
+                        <textarea class="form-control" id="form-control2" rows="7" name='post_contents'></textarea>
+                         </div>
+                         <div class="form-group">
+                        <label>작성자</label> <input class="form-control" id="form-control3" type="text" name='writer' value= '권도현' readonly="readonly">
+                         </div>
+                         <button id='submit' class="btn btn-primary">등록</button>
+                         <button id='reset' type="reset" class="btn btn-default">취소</button>
+                      </div>
+                      </div>
+                     </div>`+str;
 
+            $(".row").html(str);
 
-            $(".job-team-body").html("");
-            $(".job-team-body3").html(str);
 
         });
 
@@ -1463,43 +1476,42 @@
 
                 var str ="";
                 str = `<div class="row" style="margin-top: 60px">
-								<div class="col-sm-7" style="margin-left: 450px">
-								<h1 class="page-header">`+boardName+`</h1>
-								</div>
-								</div>
-								<div class="col-sm-7" style="margin-left: 450px">
-								<div class="panel panel-default">
-								<div class="panel-heading">게시글 수정</div>
-								<div class="panel-body">
-									<div class="form-group">
-										<label>글 번호</label>
-										<input class="form-control" name='post_num' value=`+post.postNum+` readonly="readonly">
-									</div>
-									<div class="form-group">
-										<label>제목</label>
-										<textarea class="form-control" id="post_title" rows="1" name='post_contents'>`+post.postTitle+`</textarea>
-									</div>
-									<div class="form-group">
-										<label>내용</label>
-										<textarea class="form-control"  id="post_contents" rows="3" name='post_contents'>`+post.postContents+`</textarea>
-									</div>
-									<div class="form-group">
-										<label>작성자</label>
-										<input class="form-control" name='writer' value=`+user_name+` readonly="readonly">
-									</div>
-									<div class="form-group">
-										<label>작성일</label>
-										<input class="form-control" name='post_date' value=`+post.postDate+` readonly="readonly">
-									</div>
-									<button data-oper='modify2' class="btn btn-info">수정</button>
-									<button data-oper='remove' class="btn btn-danger">삭제</button>
-									<button data-oper='list' class="btn btn-default">취소</button>
-							</div>
-							</div>
-							</div>` +str;
+                        <div class="col-sm-7" style="margin-left: 450px">
+                        <h1 class="page-header">`+boardName+`</h1>
+                        </div>
+                        </div>
+                        <div class="col-sm-7" style="margin-left: 450px">
+                        <div class="panel panel-default">
+                        <div class="panel-heading">게시글 수정</div>
+                        <div class="panel-body">
+                           <div class="form-group">
+                              <label>글 번호</label>
+                              <input class="form-control" name='post_num' value=`+post.postNum+` readonly="readonly">
+                           </div>
+                           <div class="form-group">
+                              <label>제목</label>
+                              <textarea class="form-control" id="post_title" rows="1" name='post_contents'>`+post.postTitle+`</textarea>
+                           </div>
+                           <div class="form-group">
+                              <label>내용</label>
+                              <textarea class="form-control"  id="post_contents" rows="3" name='post_contents'>`+post.postContents+`</textarea>
+                           </div>
+                           <div class="form-group">
+                              <label>작성자</label>
+                              <input class="form-control" name='writer' value=`+user_name+` readonly="readonly">
+                           </div>
+                           <div class="form-group">
+                              <label>작성일</label>
+                              <input class="form-control" name='post_date' value=`+post.postDate+` readonly="readonly">
+                           </div>
+                           <button data-oper='modify2' class="btn btn-info">수정</button>
+                           <button data-oper='remove' class="btn btn-danger">삭제</button>
+                           <button data-oper='list' class="btn btn-default">취소</button>
+                     </div>
+                     </div>
+                     </div>` +str;
 
-                $(".job-team-body").html("");
-                $(".job-team-body3").html(str);
+                $(".row").html(str);
             });
         }); // end 수정폼이동
 
@@ -1607,21 +1619,23 @@
                 replyContents: modalInputReply.val(),
                 memberNum: memberNum,
                 postNum: postNum,
-                replyWriter : modalInputReplyer.val()
+                replyWriter : modalInputReplyer.val(),
+                teamNum : teamNum,
+                boardNum : boardNum
             };
 
             replyService.insertReply(reply, function(result){ //reply.js 호출
 
                 alert("댓글이 등록되었습니다!");
                 replyModal.find("input").val(""); //입력항목 비우고
-                replyModal.modal("hide");	//모달창 닫기
+                replyModal.modal("hide");   //모달창 닫기
 
                 getListReply(); //댓글등록 후 목록 갱신
 
                 //댓글이 추가되면 해당 게시글의 댓글 수 증가
-                listPost.updateReplyCnt({teamNum:teamNum, boardNum:boardNum, postNum:postNum}, function(result){
-                    console.log(result);
-                });
+                // listPost.updateReplyCnt({teamNum:teamNum, boardNum:boardNum, postNum:postNum}, function(result){
+                //     console.log(result);
+                // });
             });
         });
 
@@ -1665,9 +1679,13 @@
                 replyModal.modal("hide");
             }
             var replyNum = replyModal.data("replyNum");
+            var post = {
+                teamNum : teamNum,
+                boardNum : boardNum
+            };
 
             //reply.js 호출
-            replyService.deleteReply(replyNum, function(result){
+            replyService.deleteReply(post, {"replyNum":replyNum}, function(result){
 
                 alert("댓글이 삭제되었습니다!");
                 replyModal.modal("hide");
@@ -1676,9 +1694,9 @@
                 console.log("댓글 삭제");
 
                 //댓글이 삭제되면 해당 게시글의 댓글 수 -1
-                listPost.deleteReplyCnt({teamNum:teamNum, boardNum:boardNum, postNum:postNum}, function(result){
-                    console.log(result);
-                });
+                // listPost.deleteReplyCnt({teamNum:teamNum, boardNum:boardNum, postNum:postNum}, function(result){
+                //     console.log(result);
+                // });
 
 
             });
@@ -1777,32 +1795,32 @@
                 {
                     title : "채팅기능 개발일정",
                     start : "2021-12-03",
-                    end 	: "2021-12-06"
+                    end    : "2021-12-06"
                 },
                 {
                     title : "이벤트 추가",
                     start : "2021-12-03",
-                    end 	: "2021-12-08"
+                    end    : "2021-12-08"
                 },
                 {
                     title : "ToDo 리스트 개발",
                     start : "2021-12-17",
-                    end 	: "2021-12-25"
+                    end    : "2021-12-25"
                 },
                 {
                     title : "댓글 추가기능 개발",
                     start : "2021-12-04",
-                    end 	: "2021-12-11"
+                    end    : "2021-12-11"
                 },
                 {
                     title : "JSP 비동기화 작업",
                     start : "2021-12-03",
-                    end 	: "2021-12-09				"
+                    end    : "2021-12-09            "
                 },
                 {
                     title : "MVC2 작업중",
                     start : "2021-12-03",
-                    end 	: "2021-12-10"
+                    end    : "2021-12-10"
                 }
 
             ],
@@ -1888,20 +1906,4 @@
         margin-left: 60px;
     }
     .chat li.right .chat-body {
-        margin-right: 60px;
     }
-    .chat li .chat-body p {
-        margin: 0;
-    }
-    .panel .slidedown .glyphicon,
-    .chat .glyphicon {
-        margin-right: 5px;
-    }
-    .chat-panel .panel-body {
-        height: 350px;
-        overflow-y: scroll;
-    }
-</style>
-
-</body>
-</html>

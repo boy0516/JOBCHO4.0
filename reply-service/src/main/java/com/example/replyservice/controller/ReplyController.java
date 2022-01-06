@@ -3,6 +3,7 @@ package com.example.replyservice.controller;
 import com.example.replyservice.dto.ReplyDto;
 import com.example.replyservice.jpa.ReplyEntity;
 import com.example.replyservice.service.ReplyService;
+import com.example.replyservice.vo.RequestPost;
 import com.example.replyservice.vo.RequestReply;
 import com.example.replyservice.vo.ResponseReply;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,8 @@ import java.util.List;
 @Slf4j
 public class ReplyController {
 
-    ReplyService replyService;
+    private final ReplyService replyService;
 
-    @Autowired
     public ReplyController(ReplyService replyService) {
         this.replyService = replyService;
     }
@@ -34,6 +34,8 @@ public class ReplyController {
     @PostMapping("/new")
     public ResponseEntity<String> createReply(@RequestBody RequestReply requestReply){
 
+        RequestPost requestPost = new RequestPost(requestReply.getTeamNum(), requestReply.getBoardNum());
+
         log.info("before 댓글 생성: " + requestReply.getReplyContents());
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -41,10 +43,10 @@ public class ReplyController {
         ReplyDto replyDto = mapper.map(requestReply, ReplyDto.class);
 
         /* jpa */
-        ReplyDto createdReply = replyService.createReply(replyDto);
+        ReplyDto createdReply = replyService.createReply(replyDto, requestPost);
         ResponseReply responseReply = mapper.map(createdReply, ResponseReply.class);
 
-        log.info("After 게시글 생성"+ requestReply.getReplyWriter());
+        log.info("After 댓글 생성"+ requestReply.getReplyWriter());
         return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
 
@@ -53,7 +55,7 @@ public class ReplyController {
      * 댓글 리스트 조회
      */
     @GetMapping("/post/{post_num}")
-    public ResponseEntity<List<ReplyEntity>> getListReply(@PathVariable("post_num") Integer postNum){
+    public ResponseEntity<List<ReplyEntity>> getListReply(@PathVariable("post_num") Long postNum){
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -61,7 +63,7 @@ public class ReplyController {
         /* jpa */
         List<ReplyEntity> replyEntity = replyService.getListReply(postNum);
 
-        log.info("게시글 리스트 조회");
+        log.info("댓글 리스트 조회");
 
         return ResponseEntity.status(HttpStatus.OK).body(replyEntity);
 
@@ -112,10 +114,11 @@ public class ReplyController {
      * 댓글 삭제
      */
     @DeleteMapping("{reply_num}")
-    public ResponseEntity<String> deletePost(@PathVariable("reply_num") Long replyNum){
+    public ResponseEntity<String> deletePost(@PathVariable("reply_num") Long replyNum,
+                                             @RequestBody RequestPost requestPost){
 
         log.info("댓글 삭제 요청: " + replyNum);
-        replyService.deleteReply(replyNum);
+        replyService.deleteReply(replyNum, requestPost);
 
         return new ResponseEntity<>("삭제 완료", HttpStatus.OK);
     }

@@ -105,7 +105,6 @@ var listPost = (function() {
     }
 
 
-
     //게시글 삭제
     function deletePost(param, callback, error) {
 
@@ -128,46 +127,46 @@ var listPost = (function() {
 
 
     //특정 게시글 댓글 수 증가
-    function updateReplyCnt(param,callback, error) {
-        console.log("댓글 수 증가 요청: "+ param.postNum);
+    // function updateReplyCnt(param,callback, error) {
+    //     console.log("댓글 수 증가 요청: "+ param.postNum);
+    //
+    //     $.ajax({
+    //         type : 'post',
+    //         url : "/post-service/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/" +param.postNum, //Controller 호출
+    //         contentType : "application/json; charset=utf-8",
+    //         success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
+    //             if (callback) {
+    //                 callback(result);
+    //             }
+    //         },
+    //         error : function(xhr, status, er) {
+    //             if (error) {
+    //                 error(er);
+    //             }
+    //         }
+    //     });
+    // }
 
-        $.ajax({
-            type : 'post',
-            url : "/post-service/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/" +param.postNum, //Controller 호출
-            contentType : "application/json; charset=utf-8",
-            success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
-                if (callback) {
-                    callback(result);
-                }
-            },
-            error : function(xhr, status, er) {
-                if (error) {
-                    error(er);
-                }
-            }
-        });
-    }
-
-    //특정 게시글 댓글 수 증가
-    function deleteReplyCnt(param,callback, error) {
-        console.log("댓글 수 -1 요청: "+ param.postNum);
-
-        $.ajax({
-            type : 'post',
-            url : "/post-service/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/reply/" +param.postNum, //Controller 호출
-            contentType : "application/json; charset=utf-8",
-            success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
-                if (callback) {
-                    callback(result);
-                }
-            },
-            error : function(xhr, status, er) {
-                if (error) {
-                    error(er);
-                }
-            }
-        });
-    }
+    //특정 게시글 댓글 수 -1
+    // function deleteReplyCnt(param,callback, error) {
+    //     console.log("댓글 수 -1 요청: "+ param.postNum);
+    //
+    //     $.ajax({
+    //         type : 'post',
+    //         url : "/post-service/team/" +param.teamNum+ "/board/" +param.boardNum+ "/post/reply/" +param.postNum, //Controller 호출
+    //         contentType : "application/json; charset=utf-8",
+    //         success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
+    //             if (callback) {
+    //                 callback(result);
+    //             }
+    //         },
+    //         error : function(xhr, status, er) {
+    //             if (error) {
+    //                 error(er);
+    //             }
+    //         }
+    //     });
+    // }
 
 
 
@@ -179,9 +178,7 @@ var listPost = (function() {
         getPost : getPost,
         insertPost : insertPost,
         updatePost : updatePost,
-        deletePost : deletePost,
-        updateReplyCnt : updateReplyCnt,
-        deleteReplyCnt : deleteReplyCnt
+        deletePost : deletePost
     };
 
 })(); //end listPost

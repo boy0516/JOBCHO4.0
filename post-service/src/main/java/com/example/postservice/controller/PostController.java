@@ -16,15 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 @RestController
@@ -34,7 +29,6 @@ public class PostController {
 
     @Autowired
     PostService postService;
-
 
     /*게시글 생성*/
     @PostMapping("/new")
@@ -63,17 +57,16 @@ public class PostController {
                                                                @RequestBody Criteria cri){
 
         //임시 데이터
-        cri.setAmount(3);
+        cri.setAmount(5);
         Integer num = cri.getPageNum() -1;
 
         //페이징 처리
-        Pageable pageRequest = PageRequest.of(num, 3, Sort.by(Sort.Direction.DESC, "postNum"));
+        Pageable pageRequest = PageRequest.of(num, 5, Sort.by(Sort.Direction.DESC, "postNum"));
 
         Page<PostEntity> postList = postService.getListPost(boardNum, pageRequest);
 
 
         PageInfo page = new PageInfo(cri, postList.getTotalElements());
-
 
         HashMap<Object, Object> map = new HashMap<Object, Object>();
         map.put("getListPost", postList); //게시글 목록
@@ -145,6 +138,7 @@ public class PostController {
 
         return new ResponseEntity<>("댓글 수 +1 완료", HttpStatus.OK);
     }
+
 
     /**
      * 특정 게시글 댓글 수 -1

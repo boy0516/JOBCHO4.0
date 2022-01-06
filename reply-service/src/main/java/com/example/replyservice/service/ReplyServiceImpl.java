@@ -1,27 +1,29 @@
 package com.example.replyservice.service;
 
 
+import com.example.replyservice.client.PostServiceClient;
 import com.example.replyservice.dto.ReplyDto;
 import com.example.replyservice.jpa.ReplyEntity;
 import com.example.replyservice.jpa.ReplyRepository;
+import com.example.replyservice.vo.RequestPost;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 @Slf4j
 public class ReplyServiceImpl implements ReplyService{
 
-    ReplyRepository replyRepository;
+    private final ReplyRepository replyRepository;
+    private final PostServiceClient postServiceClient;
 
-    @Autowired
-    public ReplyServiceImpl(ReplyRepository replyRepository) {
+
+    public ReplyServiceImpl(ReplyRepository replyRepository, PostServiceClient postServiceClient) {
         this.replyRepository = replyRepository;
+        this.postServiceClient = postServiceClient;
     }
 
 
@@ -29,7 +31,7 @@ public class ReplyServiceImpl implements ReplyService{
      * 댓글 생성
      */
     @Override
-    public ReplyDto createReply(ReplyDto replyDto) {
+    public ReplyDto createReply(ReplyDto replyDto, RequestPost requestPost) {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -39,6 +41,11 @@ public class ReplyServiceImpl implements ReplyService{
 
         ReplyDto returnValue = mapper.map(replyEntity, ReplyDto.class);
 
+        ResponseEntity<String> result = postServiceClient.updateReplyCnt(
+                                            replyEntity.getPostNum(), requestPost.getTeamNum(),
+                                            requestPost.getBoardNum());
+        log.info("FeignClient: " + result);
+
         return returnValue;
     }
 
@@ -47,7 +54,7 @@ public class ReplyServiceImpl implements ReplyService{
      * 댓글 리스트 조회
      */
     @Override
-    public List<ReplyEntity> getListReply(Integer postNum) {
+    public List<ReplyEntity> getListReply(Long postNum) {
         return replyRepository.findListByPostNum(postNum);
     }
 
@@ -86,7 +93,15 @@ public class ReplyServiceImpl implements ReplyService{
      * 댓글 삭제
      */
     @Override
-    public void deleteReply(Long replyNum) {
-        replyRepository.deleteById(replyNum);
+    public void deleteReply(Long replyNum, RequestPost requestPost) {
+        ReplyEntity replyEntity = replyRepository.findByReplyNum(replyNum);
+        if (replyEntity.getReplyNum() == replyNum) {
+            replyRepository.deleteById(replyNum);
+        }
+        ResponseEntity<String> result = postServiceClient.deleteReplyCnt(
+                                                                replyEntity.getPostNum(),
+                                                                requestPost.getTeamNum(),
+                                                                requestPost.getBoardNum());
+        log.info("FeignClient: " + result);
     }
 }

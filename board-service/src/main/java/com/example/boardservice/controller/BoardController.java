@@ -34,14 +34,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/team/{team_num}/board/*")
 @Slf4j
 public class BoardController {
-	
-	
+
 	@Autowired
 	private BoardService boardService;
-	
-	
 
-	/* REST API
+	/** REST API
 	 * 게시판 리스트 조회(PostMan 확인O 12/6)
 	 * 메인 화면에서 항상 호출
 	 */
@@ -51,7 +48,6 @@ public class BoardController {
 		log.info("게시판 목록 불러오기 전" + teamNum);
 		Iterable<BoardEntity> boardList = boardService.getListBoard(teamNum);
 
-
 		//Entity -> ResponseBoard
 		List<ResponseBoard> board = new ArrayList<>();
 		boardList.forEach(v -> {
@@ -59,13 +55,10 @@ public class BoardController {
 		});
 
 		log.info("게시판 목록 불러온 후" + board);
-
 		return ResponseEntity.status(HttpStatus.OK).body(board);
 	}
 	
-	
-	
-	/* REST API
+	/** REST API
 	 * 게시판 생성
 	 * member_num 받아서 오기
 	 */
@@ -90,9 +83,26 @@ public class BoardController {
 		log.info("데이터 입력 후" + responseBoard);
 		return ResponseEntity.status(HttpStatus.CREATED).body(responseBoard);
 	}
-	
-	
-	
+
+
+	/** REST API
+	 * 게시판 조회
+	 */
+	@GetMapping(value = "{board_num}")
+	public ResponseEntity<ResponseBoard> getBoard(@PathVariable("board_num") Long boardNum){
+
+		log.info("게시판 조회: " + boardNum);
+		ModelMapper mapper = new ModelMapper();
+		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+		BoardEntity boardEntity = boardService.getBoard(boardNum);
+
+		//ResponseBoard 변경
+		ResponseBoard responseBoard = mapper.map(boardEntity, ResponseBoard.class);
+
+		log.info("게시판 정보 전달" + responseBoard);
+		return ResponseEntity.status(HttpStatus.CREATED).body(responseBoard);
+	}
 	
 
 	

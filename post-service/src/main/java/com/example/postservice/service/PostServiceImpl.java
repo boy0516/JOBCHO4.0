@@ -17,14 +17,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class PostServiceImpl implements PostService {
 
+    private final PostRepository postRepository;
 
-    PostRepository postRepository;
-
-
-    @Autowired
     public PostServiceImpl(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
+
 
     //게시글 생성
     @Override

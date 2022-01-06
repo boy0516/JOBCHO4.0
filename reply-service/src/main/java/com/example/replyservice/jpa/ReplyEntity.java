@@ -22,7 +22,7 @@ public class ReplyEntity {
     private Integer memberNum;
 
     @Column(nullable = false)
-    private Integer postNum;
+    private Long postNum;
 
     @Column(nullable = false, length = 1000)
     private String replyContents;

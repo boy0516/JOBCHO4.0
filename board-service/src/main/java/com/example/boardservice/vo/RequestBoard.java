@@ -1,13 +1,12 @@
 package com.example.boardservice.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
 
-@Data
+@Getter @Setter
 public class RequestBoard implements Serializable {
 
 	private Long boardNum;

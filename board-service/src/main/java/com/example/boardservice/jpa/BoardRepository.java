@@ -7,4 +7,6 @@ public interface BoardRepository extends CrudRepository<BoardEntity, Long> {
 
         Iterable<BoardEntity> findByTeamNum(Integer teamNum);
 
+        BoardEntity findByBoardNum(Long boardNum);
+
 }

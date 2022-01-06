@@ -50,7 +50,9 @@ $(document).ready(function(){
 		// 	console.log("실행");
 		// 		if(result.profile_name!=null){
 		// 			console.log("실행2");
-		// 			$('.nav-profile-image-left').css('background-image', "url('/display?filename="+result.profile_name+"')");
+		//
+	//
+	// 			$('.nav-profile-image-left').css('background-image', "url('/display?filename="+result.profile_name+"')");
 		//
 		// 		}
 		// 	console.log("실행3");
@@ -66,6 +68,7 @@ $(document).ready(function(){
 	        dataType:'json',
 	        success:function(result){
 	        	console.log(result);
+				memberNum = result.memberNum;
 	        	location.href="/jobcho/main?team_num="+team_num+"&member_num="+result.memberNum;
 	        }
 		})
@@ -194,11 +197,9 @@ $(document).ready(function(){
 			})
 		
 		
-	}//end insertTeamAction 
+	}//end insertTeamAction
 	
-	
-	
-	
+
 	//팀수정 모달창 띠우기
 	$(document).on("click",".teamAdminModal", function(){
 		$("#updataTeamInfoModal").modal("show");
@@ -219,7 +220,7 @@ $(document).ready(function(){
 		insertTeamAction();
 		getTeamList();
 	})
-	
+
 });
 
 

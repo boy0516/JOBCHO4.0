@@ -13,4 +13,6 @@ public class RequestReply {
     private Integer memberNum;
     private Integer postNum;
     private String replyWriter;
+    private int teamNum;
+    private int boardNum;
 }

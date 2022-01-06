@@ -12,10 +12,12 @@ public interface BoardService {
 
 	public Iterable<BoardEntity> getListBoard(Integer teamNum);
 
+	public BoardEntity getBoard(Long boardNum);
+
 //	public int updateBoard(BoardVO board);
 //
 //	public void deleteBoard(int board_num);
 //
-//	public BoardVO getBoard(int board_num);
+
 
 }

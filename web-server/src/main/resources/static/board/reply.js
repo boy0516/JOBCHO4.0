@@ -84,11 +84,13 @@ var replyService = (function() {
 
 
     //댓글 삭제
-    function deleteReply(replyNum, callback, error) {
+    function deleteReply(post,param, callback, error) {
 
         $.ajax({
             type : 'delete',
-            url : '/reply-service/reply/' + replyNum,
+            url : '/reply-service/reply/' + param.replyNum,
+            data : JSON.stringify(post),
+            contentType : "application/json; charset=utf-8",
             success : function(deleteResult, status, xhr) {
                 if (callback) {
                     callback(deleteResult);
