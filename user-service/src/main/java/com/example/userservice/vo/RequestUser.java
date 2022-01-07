@@ -13,4 +13,5 @@ public class RequestUser {
     private String userPw;
     private String userPwHint;
     private String userPhoneNum;
+    private String profileName;
 }

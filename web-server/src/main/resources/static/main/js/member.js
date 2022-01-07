@@ -14,9 +14,19 @@ $(document).ready(function(){
 
     var member_num = getParameter("member_num")
     //로그인한 유저 넘버
-    var user_num=1;
+    var user=null;
+    var user_num;
 
-
+    $.ajax({
+        url:'/user-service/userbytoken',
+        type:'Get',
+        dataType:'json',
+        success:function(result){
+            user_num = result.userNum;
+            user=result;
+            getMemberProfile();
+        }
+    });//$.ajax
 
     //컨텐츠바디에 현재팀의 멤버리스트 출력
     function showMemberList(result){
@@ -291,4 +301,31 @@ $(document).ready(function(){
             });//$.ajax
         }
     });
+
+    //사용자 이미지 관련
+    function getMemberProfile(result) {
+        $.ajax({
+            url: "/member-service/team/" + team_num + "/member/" + user_num,
+            type: 'Get',
+            dataType: 'json',
+            success: function (result) {
+                console.log(result);
+                showProfile(result);
+            }
+        })
+    }
+
+    //사용자 이미지 관련
+    function showProfile(result){
+        console.log("실행");
+        if(result.profileName!=null){
+            console.log("실행2");
+            $('.nav-profile-image-left').css('background-image', "url('/jobcho/display?filename="+result.profileName+"')");
+            $('.nav-profile-content-left').html("<p>"+result.memberName+"</p>")
+            $('.nav-profile-content-left').append("<p>"+result.memberPosition+"</p>")
+            $('.nav-profile-content-left').append("<p>"+user.userEmail+"</p>")
+        }
+        console.log("실행3");
+    }//end showProfile
+
 });//끝

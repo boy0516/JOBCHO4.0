@@ -2,31 +2,23 @@ package com.example.apigatewayservice.filter;
 
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-
-import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Supplier;
-
 @Component
 @Slf4j
-public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
+public class WebAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<WebAuthorizationHeaderFilter.Config> {
     Environment env;
 
-    public AuthorizationHeaderFilter(Environment env) {
+    public WebAuthorizationHeaderFilter(Environment env) {
         super(Config.class);
         this.env = env;
     }
@@ -40,13 +32,14 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         return ((exchange, chain) -> {
             //사용자가 요청을했을떄 인증을 체크해줄거임
             ServerHttpRequest request = exchange.getRequest();
-            log.info(String.valueOf(request.getCookies()));
-                if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
+//            log.info(String.valueOf(request.getCookies().get("accessToken")).replace("accessToken=",""));
+            log.info(String.valueOf(request.getCookies().get("accessToken").get(0)));
+            if (!request.getHeaders().containsKey(HttpHeaders.COOKIE)) {
+                return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
 
-            String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-            String jwt = authorizationHeader.replace("Bearer", "");
+            String authorizationHeader = request.getHeaders().get(HttpHeaders.COOKIE).get(0);
+            String jwt = authorizationHeader.replace("accessToken=", "");
 
             if (!isJwtValid(jwt)) {
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);

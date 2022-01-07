@@ -14,13 +14,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
     private Environment env;
+
+    public WebSecurity(Environment env, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.env = env;
+        this.userService = userService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     //권한
     @Override
@@ -29,13 +31,15 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable();
 
         http.authorizeRequests().antMatchers("/**")
-                .hasIpAddress("*")
+                .hasIpAddress("192.168.0.6")
                 .and()
                 .addFilter(getAuthenticationFilter());
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception{
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager(),
+                userService,
+                env);
         authenticationFilter.setAuthenticationManager(authenticationManager());
 
         return authenticationFilter;

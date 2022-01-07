@@ -39,6 +39,12 @@ management:
     web:
       exposure:
         include: refresh, health, beans
-#token:
-#  expiration_time: 86400000
-#  secret: user_token
+
+
+token:
+  expiration_time: 8640000
+  secret: user_token
+
+refresh_toekn:
+  expiration_time: 86400000
+  secret: user_refresh_token

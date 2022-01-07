@@ -5,7 +5,19 @@ $(document).ready(function(){
 	//const apiurl="http://127.0.0.1:8000/team-service"
 	const apiurl="http://127.0.0.1:8000/"
 	var user_num=1;
-	
+
+	$.ajax({
+		url:'/user-service/userbytoken',
+		type:'Get',
+		dataType:'json',
+		success:function(result){
+			console.log(result);
+			$(".user-profile-name").html(result.userName);
+			$(".user-profile-email").html(result.userEmail);
+			$('.nav-profile-image-left').css('background-image', "url('/jobcho/display?filename="+result.profileName+"')");
+		}
+	});//$.ajax
+
 	function showTeamList(result){
 		str="";
 		result.forEach(function(item){

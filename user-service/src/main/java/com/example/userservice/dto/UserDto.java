@@ -18,4 +18,5 @@ public class UserDto {
     private String userPwHint;
     private String isLive;
     private Date userDate;
+    private String profileName;
 }

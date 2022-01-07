@@ -6,6 +6,8 @@ import com.example.userservice.jpa.UserRepository;
 import com.example.userservice.service.UserService;
 import com.example.userservice.vo.RequestUser;
 import com.example.userservice.vo.ResponseUser;
+import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/")
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -66,9 +69,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(requestUser);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<RequestUser> loginUser(){
-        return null;
+    @GetMapping("/userbytoken")
+    public ResponseEntity<ResponseUser> getUserByEmail(
+            @CookieValue(value = "accessToken", defaultValue = "Atta") String accessToken){
+        log.info(accessToken);
+        String subject = Jwts.parser().setSigningKey("user_token")
+                .parseClaimsJws(accessToken).getBody()
+                .getSubject();
+        log.info(subject);
+        UserEntity userEntity = userRepository.findByUserEmail(subject);
+        ResponseUser responseUser  = new ModelMapper().map(userEntity,ResponseUser.class);
+        return ResponseEntity.status(HttpStatus.OK).body(responseUser);
     }
 
 }

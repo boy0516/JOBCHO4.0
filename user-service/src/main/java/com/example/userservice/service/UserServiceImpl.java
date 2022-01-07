@@ -28,11 +28,11 @@ public class UserServiceImpl implements UserService {
     BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByUserEmail(userEmail);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByUserEmail(email);
 
         if(userEntity == null){
-            throw new UsernameNotFoundException(userEmail);
+            throw new UsernameNotFoundException(email);
         }
         return new User(userEntity.getUserEmail(), userEntity.getUserPw(),
                 true, true, true, true,
@@ -67,4 +67,11 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
+    @Override
+    public UserDto getUserDetailsByUserEmail(String userEmail) {
+        UserEntity userEntity = userRepository.findByUserEmail(userEmail);
+
+        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+        return userDto;
+    }
 }

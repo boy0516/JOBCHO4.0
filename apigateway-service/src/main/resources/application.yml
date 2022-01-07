@@ -17,69 +17,124 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/**
-            - Method=GET,POST,PUT,DELETE
+            - Path=/user-service/login
+            - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/actuator/**
-            - Method=GET,POST
+            - Path=/user-service/signup
+            - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+            - Method=GET
+          filters:
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - WebAuthorizationHeaderFilter
         - id: team-service
           uri: lb://TEAM-SERVICE
           predicates:
             - Path=/team-service/**
             - Method=GET,POST,PUT,DELETE
           filters:
-            - RemoveRequestHeader=Cookie
             - RewritePath=/team-service/(?<segment>.*), /$\{segment}
+            - WebAuthorizationHeaderFilter
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/member-service/**
             - Method=GET,POST,PUT,DELETE
           filters:
-            - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+            - WebAuthorizationHeaderFilter
+        - id: web-server
+          uri: lb://WEB-SERVER
+          predicates:
+            - Path=/jobcho/users/login
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/jobcho/(?<segment>.*), /$\{segment}
+        - id: web-server
+          uri: lb://WEB-SERVER
+          predicates:
+            - Path=/jobcho/users/register
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/jobcho/(?<segment>.*), /$\{segment}
+        - id: web-server
+          uri: lb://WEB-SERVER
+          predicates:
+            - Path=/jobcho/*/*.js
+            - Method=GET
+          filters:
+            - RewritePath=/jobcho/(?<segment>.*), /$\{segment}
+        - id: web-server
+          uri: lb://WEB-SERVER
+          predicates:
+            - Path=/jobcho/*/*.css
+            - Method=GET
+          filters:
+            - RewritePath=/jobcho/(?<segment>.*), /$\{segment}
+        - id: web-server
+          uri: lb://WEB-SERVER
+          predicates:
+            - Path=/jobcho/*/*/*.js
+            - Method=GET
+          filters:
+            - RewritePath=/jobcho/(?<segment>.*), /$\{segment}
+        - id: web-server
+          uri: lb://WEB-SERVER
+          predicates:
+            - Path=/jobcho/*/*/*.css
+            - Method=GET
+          filters:
+            - RewritePath=/jobcho/(?<segment>.*), /$\{segment}
         - id: web-server
           uri: lb://WEB-SERVER
           predicates:
             - Path=/jobcho/**
             - Method=GET
           filters:
-            - RemoveRequestHeader=Cookie
             - RewritePath=/jobcho/(?<segment>.*), /$\{segment}
+            - WebAuthorizationHeaderFilter
         - id: post-service
           uri: lb://POST-SERVICE
           predicates:
             - Path=/post-service/**
             - Method=GET, POST, PUT, DELETE
           filters:
-            - RemoveRequestHeader=Cookie
             - RewritePath=/post-service/(?<segment>.*), /$\{segment}
+            - WebAuthorizationHeaderFilter
         - id: board-service
           uri: lb://BOARD-SERVICE
           predicates:
             - Path=/board-service/**
             - Method=GET, POST, PUT, DELETE
           filters:
-            - RemoveRequestHeader=Cookie
             - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - WebAuthorizationHeaderFilter
         - id: reply-service
           uri: lb://REPLY-SERVICE
           predicates:
             - Path=/reply-service/**
             - Method=GET, POST, PUT, DELETE
           filters:
-            - RemoveRequestHeader=Cookie
             - RewritePath=/reply-service/(?<segment>.*), /$\{segment}
+            - WebAuthorizationHeaderFilter
 management:
   endpoints:
     web:
       exposure:
         include: refresh, health, beans, httptrace
+token:
+  expiration_time: 86400000
+  secret: user_token
