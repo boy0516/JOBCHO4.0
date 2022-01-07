@@ -116,6 +116,8 @@ public class MemberController {
         System.out.println("run upload..");
         System.out.println(uploadFile);
         String uploadFolder = "C:\\upload";
+
+
         UUID uuid = UUID.randomUUID();
         String uploadFileName = null;
         for(MultipartFile multipartFile : uploadFile){

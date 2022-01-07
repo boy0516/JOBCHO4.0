@@ -15,7 +15,7 @@ $(document).ready(function(){
             success : function(result, status, xhr) { // Ajax 실행결과에 따라 Callback 함수 실행
                 console.log(result)
                 // if (status == 200) {
-                location.href="/jobcho/team/"
+                location.href="/jobcho/team"
                 // }
             },
             error : function(xhr, status, er) {

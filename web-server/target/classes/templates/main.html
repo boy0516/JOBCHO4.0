@@ -96,7 +96,7 @@
 
             <!--프로필-->
             <div>
-                <div class="nav-profile-image-left" style="background-image: url('/board/gunsoo.png')"
+                <div class="nav-profile-image-left"
                 ></div>
                 <div class="nav-profile-content-left">
                     <p></p>
@@ -1704,27 +1704,7 @@
         });
 
 
-        //사용자 이미지 관련
-        $.ajax({
-            url:"/team/"+team_num+"/member/"+user_num,
-            type:'Get',
-            dataType:'json',
-            success:function(result){
-                console.log("result결과입니다 : "+ result);
-                showProfile(result);
-            }
-        })
 
-        //사용자 이미지 관련
-        function showProfile(result){
-            console.log("실행");
-            if(result.profile_name!=null){
-                console.log("실행2");
-                $('.nav-profile-image-left').css('background-image', "url('/display?filename="+result.profile_name+"')");
-
-            }
-            console.log("실행3");
-        }//end showProfile
 
     }); //end document.ready1
 </script>

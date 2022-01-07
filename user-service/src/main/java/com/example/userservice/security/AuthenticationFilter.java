@@ -88,7 +88,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         Cookie cookie = new Cookie("accessToken",accessToken);
         cookie.setPath("/");
-        cookie.setDomain("127.0.0.1");
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
         response.addHeader("userNum", String.valueOf(userDto.getUserNum()));
