@@ -1,5 +1,7 @@
 package com.example.chatservice.controller;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +16,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint("/chatsocket/{chatroom_num}")
+@Slf4j
 public class ChatSocketController {
 
     // 접속 된 클라이언트 WebSocket session 관리 Map
@@ -21,6 +24,7 @@ public class ChatSocketController {
 
     @OnOpen
     public void handleOpen(Session userSession, @PathParam("chatroom_num") int chatroom_num) {
+        log.info("소켓 연결");
         // 클라이언트가 접속하면 WebSocket세션을 리스트에 저장한다.
         if(sessionMap.get(chatroom_num)==null){
             sessionMap.put(chatroom_num, Collections.synchronizedList(new ArrayList<>()));
@@ -71,6 +75,7 @@ public class ChatSocketController {
         }
         // 콘솔에 접속 끊김 로그를 출력한다.
         System.out.println("client is now disconnected...");
+        log.info("끊김");
     }
 }
 

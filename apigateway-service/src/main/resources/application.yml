@@ -130,6 +130,19 @@ spring:
           filters:
             - RewritePath=/reply-service/(?<segment>.*), /$\{segment}
             - WebAuthorizationHeaderFilter
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/chat-service/**
+            - Method=GET, POST, PUT, DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/chat-service/(?<segment>.*), /$\{segment}
+        - id: chat-service-socket
+          uri: lb:ws://chat-service
+          predicates:
+            - Path=/websocket/**
+
 management:
   endpoints:
     web:
