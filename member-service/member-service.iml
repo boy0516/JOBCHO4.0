@@ -186,5 +186,6 @@
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:5.6.0" level="project" />
     <orderEntry type="library" name="Maven: io.github.openfeign:feign-core:11.7" level="project" />
     <orderEntry type="library" name="Maven: io.github.openfeign:feign-slf4j:11.7" level="project" />
+    <orderEntry type="library" name="Maven: org.mariadb.jdbc:mariadb-java-client:2.7.2" level="project" />
   </component>
 </module>

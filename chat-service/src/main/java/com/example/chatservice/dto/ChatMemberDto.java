@@ -1,6 +1,7 @@
 package com.example.chatservice.dto;
 
 import com.example.chatservice.jpa.ChatEntity;
+import com.example.chatservice.jpa.MemberEntity;
 import lombok.Data;
 
 import java.util.Date;
@@ -14,5 +15,6 @@ public class ChatMemberDto {
     private Date createAt;
     private int isLive;
 
+    private MemberEntity memberEntity;
     private List<ChatEntity> chatEntities;
 }

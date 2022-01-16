@@ -7,6 +7,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class RequestChatMember {
-    private MemberEntity memberEntity;
+public class RequestMemberList {
+    List<MemberEntity> memberList;
 }

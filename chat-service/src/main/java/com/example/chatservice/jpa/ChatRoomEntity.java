@@ -36,10 +36,6 @@ public class ChatRoomEntity implements Serializable {
     @ColumnDefault(value = "CURRENT_TIMESTAMP")
     private Date createAt;
 
-    @OneToMany
-    @JoinColumn(name = "CHAT_ROOM_NUM")
-    private List<ChatEntity> chatEntities = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "MEMBER_NUM")
     private MemberEntity memberEntity;

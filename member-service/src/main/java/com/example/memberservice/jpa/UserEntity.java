@@ -11,38 +11,32 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "member",uniqueConstraints = {@UniqueConstraint(columnNames = {"user_num","team_num"})})
+@Table(name="users")
 @DynamicInsert
 @DynamicUpdate
-public class MemberEntity implements Serializable {
+public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int memberNum;
+    private int userNum;
 
     @Column(nullable = false)
-    private String memberName;
+    private String userName;
     @Column(nullable = false)
-    @ColumnDefault(value = "'팀원'")
-    private String memberPosition;
-
+    private String userPhoneNum;
+    @Column(nullable = false)
+    private String userEmail;
+    @Column(nullable = false)
+    private String userPw;
+    @Column(nullable = false)
+    private String userPwHint;
+    @Column(nullable = true)
+    private String userBirth;
     @Column(nullable = false, insertable = false)
     @ColumnDefault(value = "1")
     private int isLive;
-
     @Column(nullable = false, updatable = false, insertable = false)
     @ColumnDefault(value = "CURRENT_TIMESTAMP")
-    private Date createAt;
-
-    @Column(nullable = false)
+    private Date userDate;
     @ColumnDefault(value = "'default.jpg'")
     private String profileName;
-
-    @ManyToOne
-    @JoinColumn(name="USER_NUM")
-    private UserEntity userEntity;
-
-    @ManyToOne
-    @JoinColumn(name="TEAM_NUM")
-    private TeamEntity teamEntity;
-
 }

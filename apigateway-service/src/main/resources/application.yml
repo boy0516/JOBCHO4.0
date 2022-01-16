@@ -141,7 +141,7 @@ spring:
         - id: chat-service-socket
           uri: lb:ws://chat-service
           predicates:
-            - Path=/websocket/**
+            - Path=/chat-service/**
 
 management:
   endpoints:

@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("team/{teamNum}/chatroom")
+@RequestMapping("member/{memberNum}")
 @Slf4j
 public class ChatController {
     @Autowired
     ChatService chatService;
 
     //채팅 생성
-    @PostMapping("/{chatRoomNum}/member/{memberNum}/chat/new")
+    @PostMapping("/chatroom/{chatRoomNum}/chat/new")
     public ResponseEntity<ResponseChat> insertChat(
             @PathVariable("chatRoomNum") int chatRoomNum,
             @PathVariable("memberNum") int memberNum,
@@ -50,49 +50,53 @@ public class ChatController {
                         :ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
-    //채팅리스트 가져오기
-//    @GetMapping("/{chatRoomNum}/chat")
-//    public ResponseEntity<List<ResponseChat>> getListChat(@PathVariable("chatRoomNum") int chatRoomNum){
-//
-//        return null;
-//    }
+//    채팅리스트 가져오기
+    @GetMapping("/chatroom/{chatRoomNum}/chat")
+    public ResponseEntity<List<ResponseChat>> getListChat(@PathVariable("memberNum") int memberNum,
+            @PathVariable("chatRoomNum") int chatRoomNum){
+        List<ResponseChat> result = chatService.getListChat(memberNum,chatRoomNum);
+        return result!=null?ResponseEntity.status(HttpStatus.CREATED).body(result)
+                :ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
 
     //채팅삭제
-    @DeleteMapping("/{chatRoom_num}/chat/{chat_num}")
+    @DeleteMapping("/chatroom/{chatRoomNum}/chat/{chatNum}")
     public ResponseEntity<String> deleteChat(@PathVariable("chat_num") int chat_num){
         return null;
     }
 
     //채팅멤버 초대
-    @PostMapping("/{chatRoomNum}/chatmember/new")
+    @PostMapping("/chatroom/{chatRoomNum}/chatmember/new")
     public ResponseEntity<ResponseChatMember> insertChatMember(
             @PathVariable("chatRoomNum") int chatRoomNum,
-            @RequestBody RequestChatMember requestChatMember){
+            @RequestBody  RequestMemberList requestMemberList){
         log.info("Controller: Do post chatMember");
-        log.info(String.valueOf(requestChatMember));
+        log.info(String.valueOf(requestMemberList));
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT); //강력한 매칭 규칙
-        ChatMemberDto chatMemberDto = new ChatMemberDto();
-        try{
-            chatMemberDto = mapper.map(requestChatMember,ChatMemberDto.class);
-            chatMemberDto.setChatRoomNum(chatRoomNum);
-        }catch(Exception e){
-            log.info("fail chatMemberDto map");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+        List<ChatMemberDto> chatMemberDtoList = new ArrayList<>();
+        requestMemberList.getMemberList().forEach(v->{
+            ChatMemberDto chatMemberDto = new ChatMemberDto();
+            chatMemberDto.setMemberEntity(v);
+            chatMemberDtoList.add(chatMemberDto);
+        });
+
         log.info("success dto mapped");
-        log.info(String.valueOf(chatMemberDto));
-        int result = chatService.insertChatMember(chatMemberDto);
+        log.info(String.valueOf(chatMemberDtoList));
+        int result = chatService.insertChatMember(chatMemberDtoList, chatRoomNum);
         return result==1?ResponseEntity.status(HttpStatus.CREATED).body(null)
                 :ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     //채팅멤버리스트 불러오기
-//    @GetMapping("/{chatRoomNum}/chatmember")
-//    public ResponseEntity<List<ResponseChatMember>> getListChatMember(@PathVariable("chatRoomNum") int chatRoomNum){
-//        chatService.getListChatMember(chatRoomNum);
-//        return null;
-//    }
+    @GetMapping("/chatroom/{chatRoomNum}/chatmember")
+    public ResponseEntity<List<ResponseChatMember>> getListChatMember(
+            @PathVariable("chatRoomNum") int chatRoomNum,
+            @PathVariable("memberNum") int memberNum){
+        List<ResponseChatMember> result = chatService.getListChatMember(chatRoomNum,memberNum);
+        return result!=null?ResponseEntity.status(HttpStatus.CREATED).body(result)
+                :ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
 
     //채팅멤버가져오기
 //    @GetMapping("/{chatRoom_num}/chatmember/{member_num}")
@@ -101,15 +105,15 @@ public class ChatController {
 //    }
 
     //멤버삭제
-    @DeleteMapping("/chatmember/{chatmember_num}")
+    @DeleteMapping("/chatroom/{chatRoomNum}/chatmember/{chatmember_num}")
     public ResponseEntity<String> deleteChatMember(@PathVariable("chatmember_num") int chatMember_num){
         return null;
     }
 
     //채팅방 생성
-    @PostMapping("/new")
+    @PostMapping("/chatroom/new")
     public ResponseEntity<ResponseChatRoom> insertChatRoom(@RequestBody RequestChatRoom requestChatRoom,
-                                                           @PathVariable("teamNum") int teamNum){
+                                                           @PathVariable("memberNum") int memberNum){
         log.info("Controller: Do post chatRoom");
         log.info(String.valueOf(requestChatRoom));
         ModelMapper mapper = new ModelMapper();
@@ -118,12 +122,9 @@ public class ChatController {
         TeamDto teamDto = new TeamDto();
         MemberDto memberDto = new MemberDto();
         try{
-            teamDto.setTeamNum(teamNum);
-            memberDto.setMemberNum(requestChatRoom.getMemberNum());
+            memberDto.setMemberNum(memberNum);
             chatRoomDto = mapper.map(requestChatRoom,ChatRoomDto.class);
-            chatRoomDto.setTeamDto(teamDto);
             chatRoomDto.setMemberDto(memberDto);
-//            chatRoomDto.set
         }catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -136,10 +137,9 @@ public class ChatController {
     }
 
     //채팅방리스트가져오기
-    @GetMapping("/member/{memberNum}")
-    public ResponseEntity<List<ResponseChatRoom>> getListChatRoom(@PathVariable("teamNum") int teamNum,
-                                                                  @PathVariable("memberNum") int memberNum){
-        List<ChatRoomDto> chatRoomDtoList = chatService.getListChatRoom(teamNum, memberNum);
+    @GetMapping("/chatroom")
+    public ResponseEntity<List<ResponseChatRoom>> getListChatRoom(@PathVariable("memberNum") int memberNum){
+        List<ChatRoomDto> chatRoomDtoList = chatService.getListChatRoom(memberNum);
         log.info("chatservice return not null check");
         if(chatRoomDtoList==null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -156,7 +156,7 @@ public class ChatController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        log.info("mapping done, controller return..");
+        log.info("get chatroom success");
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -167,7 +167,7 @@ public class ChatController {
 //    }
 
     //채팅방 정보 수정
-    @PutMapping("/{chatRoom_num}")
+    @PutMapping("/chatroom/{chatRoom_num}")
     public ResponseEntity<ResponseChatRoom> updateChatRoom(
             @PathVariable("chatRoom_num")int chatRoom_num,
             @RequestBody RequestChatRoom chatRoom){
@@ -180,4 +180,13 @@ public class ChatController {
         return null;
     }
 
+    //채팅방 초대할 수 있는 멤버 리스트 호출
+    @GetMapping("/chatroom/{chatRoomNum}/withoutchatmember")
+    public ResponseEntity<List<ResponseMember>> getWithoutChatMemberList(
+            @PathVariable("memberNum")int memberNum,
+            @PathVariable("chatRoomNum") int chatRoomNum){
+        List<ResponseMember> result = chatService.getListMemberWithoutChatMember(chatRoomNum,memberNum);
+        return result!=null?ResponseEntity.status(HttpStatus.CREATED).body(result)
+                :ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
 }

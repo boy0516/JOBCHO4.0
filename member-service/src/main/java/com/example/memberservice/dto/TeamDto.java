@@ -1,16 +1,12 @@
-package com.example.teamservice.dto;
+package com.example.memberservice.dto;
 
-import com.example.teamservice.vo.ResponseMember;
-import lombok.AllArgsConstructor;
+import com.example.memberservice.vo.ResponseMember;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class TeamDto {
     private int teamNum;
     private int userNum;

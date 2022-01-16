@@ -6,8 +6,9 @@ import java.util.Date;
 
 @Data
 public class ResponseChat {
-    private ResponseChatMember chatMember;
+    private int chatNum;
     private String chatContents;
     private String uploadName;
     private Date createAt;
+    private ResponseMember member;
 }

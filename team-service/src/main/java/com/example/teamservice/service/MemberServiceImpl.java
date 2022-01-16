@@ -1,10 +1,10 @@
-package com.example.memberservice.service;
+package com.example.teamservice.service;
 
-import com.example.memberservice.client.UserServiceClient;
-import com.example.memberservice.dto.MemberDto;
-import com.example.memberservice.dto.UserDto;
-import com.example.memberservice.jpa.*;
-import com.example.memberservice.vo.ResponseUser;
+import com.example.teamservice.dto.MemberDto;
+import com.example.teamservice.dto.UserDto;
+import com.example.teamservice.jpa.MemberEntity;
+import com.example.teamservice.jpa.MemberRepository;
+import com.example.teamservice.vo.ResponseUser;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +19,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     MemberRepository memberRepository;
-
-    @Autowired
-    TeamRepository teamRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    UserServiceClient userServiceClient;
 
     @Override
     public List<MemberDto> getListMember(int team_num) {
@@ -60,13 +51,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberEntity insertMember(MemberDto memberDto) {
         MemberEntity memberEntity = new ModelMapper().map(memberDto,MemberEntity.class);
-
-        TeamEntity teamEntity = teamRepository.findByTeamNum(memberDto.getTeamNum());
-        UserEntity userEntity = userRepository.findByUserNumAndIsLive(memberDto.getUserNum(),1);
-        memberEntity.setTeamEntity(teamEntity);
-        memberEntity.setUserEntity(userEntity);
+        if(memberEntity.getMemberNum()!=0){
+            return null;
+        }
         log.info(String.valueOf(memberEntity));
-
         MemberEntity postedEntity = memberRepository.save(memberEntity);
         return postedEntity;
     }
@@ -98,26 +86,7 @@ public class MemberServiceImpl implements MemberService {
         return 1;
     }
 //
-    @Override
-    public List<ResponseUser> getListWithoutMembers(int team_num) {
-        Iterable<UserEntity> userEntities = userRepository.findByUserWithOutMember(team_num);
-        log.info(String.valueOf(userEntities));
-        List<ResponseUser> responseUserList = new ArrayList<>();
 
-        userEntities.forEach(v->{
-            responseUserList.add(new ModelMapper().map(v, ResponseUser.class));
-        });
-        log.info(String.valueOf(responseUserList));
-        return responseUserList;
-
-    }
-//
-
-//
-//    @Override
-//    public List<MemberVO> getListWithOutChatMember(Map<String, Integer> map) {
-//        return null;
-//    }
 //
     @Override
     public MemberEntity updateMemberProfile(MemberDto memberDto) {

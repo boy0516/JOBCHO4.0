@@ -33,6 +33,10 @@ public class ChatEntity implements Serializable {
     private String uploadName;
 
     @ManyToOne
+    @JoinColumn(name = "CHAT_ROOM_NUM")
+    private ChatRoomEntity chatRoomEntity;
+
+    @ManyToOne
     @JoinColumn(name = "MEMBER_NUM")
     private MemberEntity memberEntity;
 

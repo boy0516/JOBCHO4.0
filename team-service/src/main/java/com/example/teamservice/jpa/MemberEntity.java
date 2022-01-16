@@ -1,4 +1,4 @@
-package com.example.memberservice.jpa;
+package com.example.teamservice.jpa;
 
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
@@ -44,5 +44,4 @@ public class MemberEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name="TEAM_NUM")
     private TeamEntity teamEntity;
-
 }

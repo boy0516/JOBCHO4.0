@@ -1,6 +1,5 @@
 package com.example.teamservice.controller;
 
-import com.example.teamservice.client.MemberServiceClient;
 import com.example.teamservice.dto.TeamDto;
 import com.example.teamservice.jpa.TeamEntity;
 import com.example.teamservice.service.TeamService;
@@ -24,8 +23,6 @@ public class TeamController {
 
     @Autowired
     private TeamService teamService;
-
-
 
     //팀생성
     @PostMapping("/{user_num}")

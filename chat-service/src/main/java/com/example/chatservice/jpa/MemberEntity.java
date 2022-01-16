@@ -15,7 +15,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "member",uniqueConstraints = {@UniqueConstraint(columnNames = {"userNum","team_num"})})
+@Table(name = "member",uniqueConstraints = {@UniqueConstraint(columnNames = {"userNum","teamNum"})})
 @DynamicInsert
 @DynamicUpdate
 public class MemberEntity implements Serializable{
@@ -44,4 +44,6 @@ public class MemberEntity implements Serializable{
     @ColumnDefault(value = "'default.jpg'")
     private String profileName;
 
+    @Column(nullable = false)
+    private int teamNum;
 }

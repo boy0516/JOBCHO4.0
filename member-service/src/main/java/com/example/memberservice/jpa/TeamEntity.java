@@ -1,25 +1,20 @@
-package com.example.chatservice.jpa;
+package com.example.memberservice.jpa;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
 @Table(name="team")
-public class TeamEntity{
+public class TeamEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int teamNum;
 
-    @Column(nullable = false)
-    private int userNum;
     @Column(nullable = false)
     private String teamName;
     @Column(nullable = true)
@@ -31,8 +26,7 @@ public class TeamEntity{
     @ColumnDefault(value = "CURRENT_TIMESTAMP")
     private Date teamDate;
 
-    @OneToMany
-    @JoinColumn(name = "TEAM_NUM")
-    private List<MemberEntity> memberEntities = new ArrayList<>();
-
+    @ManyToOne
+    @JoinColumn(name="USER_NUM")
+    private UserEntity userEntity;
 }

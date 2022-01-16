@@ -5,9 +5,13 @@ import com.example.chatservice.dto.ChatMemberDto;
 import com.example.chatservice.dto.ChatRoomDto;
 
 import com.example.chatservice.jpa.*;
+import com.example.chatservice.vo.ResponseChat;
+import com.example.chatservice.vo.ResponseChatMember;
+import com.example.chatservice.vo.ResponseMember;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,9 +23,6 @@ public class ChatServiceImpl implements ChatService{
 
     @Autowired
     ChatRepository chatRepository;
-
-    @Autowired
-    TeamRepository teamRepository;
 
     @Autowired
     MemberRepository memberRepository;
@@ -40,10 +41,9 @@ public class ChatServiceImpl implements ChatService{
         chatEntity.setMemberEntity(memberEntity);
         log.info(String.valueOf(chatEntity));
         ChatRoomEntity chatRoomEntity = chatRoomRepository.findByChatRoomNum(chatDto.getChatRoomNum());
-        chatRoomEntity.getChatEntities().add(chatEntity);
+        chatEntity.setChatRoomEntity(chatRoomEntity);
         try{
             chatRepository.save(chatEntity);
-            chatRoomRepository.save(chatRoomEntity);
             log.info("success create chat");
             return 1;
         }catch(Exception e){
@@ -54,9 +54,16 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public List<ChatDto> getListChat(int chatRoom_num) {
-//        chatRepository.findByChatMemberNumAndIsLive(chatRoom_num, )
-        return null;
+    public List<ResponseChat> getListChat(int memberNum,int chatRoomNum) {
+        Iterable<ChatEntity> chatEntities= chatRepository.
+                findByMemberEntityMemberNumAndChatRoomEntityChatRoomNum(
+                        memberNum
+                        ,chatRoomNum);
+        List<ResponseChat> responseChatList = new ArrayList<>();
+        chatEntities.forEach(v->{
+            responseChatList.add(new ModelMapper().map(v, ResponseChat.class));
+        });
+        return responseChatList;
     }
 
     @Override
@@ -65,27 +72,40 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public int insertChatMember(ChatMemberDto chatMemberDto) {
+    public int insertChatMember(List<ChatMemberDto> chatMemberDtoList, int chatRoomNum) {
         log.info("Service: create chatMember");
-        ChatMemberEntity chatMemberEntity = new ModelMapper().map(chatMemberDto,ChatMemberEntity.class);
-        log.info(String.valueOf(chatMemberEntity));
-        try{
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findByChatRoomNum(chatRoomNum);
+        chatMemberDtoList.forEach(v->{
+            ChatMemberEntity chatMemberEntity = new ModelMapper().map(v,ChatMemberEntity.class);
+            log.info(String.valueOf(chatMemberEntity));
+            chatMemberEntity.setChatRoomEntity(chatRoomEntity);
             chatMemberRepository.save(chatMemberEntity);
-            log.info("success create chatMember");
-            return 1;
-        }catch(Exception e){
-            log.info("Fail create chatMember");
-            e.printStackTrace();
-            return 0;
-        }
+        });
+
+
+//        try{
+//            chatMemberRepository.save(chatMemberEntity);
+//            log.info("success create chatMember");
+//            return 1;
+//        }catch(Exception e){
+//            log.info("Fail create chatMember");
+//            e.printStackTrace();
+//            return 0;
+//        }
+        return 1;
     }
 
     @Override
-    public List<ChatMemberDto> getListChatMember(int chatRoom_num) {
-        Iterable<ChatMemberEntity> chatMemberEntities = chatMemberRepository.findAll();
+    public List<ResponseChatMember> getListChatMember(int chatRoomNum, int memberNum) {
+        Iterable<ChatMemberEntity> chatMemberEntities = chatMemberRepository.
+                findByChatRoomEntityChatRoomNumAndMemberEntityMemberNum(chatRoomNum, memberNum);
         log.info(String.valueOf(chatMemberEntities));
+        List<ResponseChatMember> chatMemberList = new ArrayList<>();
+        chatMemberEntities.forEach(v->{
+            chatMemberList.add(new ModelMapper().map(v, ResponseChatMember.class));
+        });
 
-        return null;
+        return chatMemberList;
     }
 
     @Override
@@ -105,7 +125,7 @@ public class ChatServiceImpl implements ChatService{
         MemberEntity memberEntity = memberRepository.findByMemberNum(chatRoomDto.getMemberDto().getMemberNum());
         ChatMemberEntity chatMemberEntity = new ChatMemberEntity();
         chatMemberEntity.setMemberEntity(memberEntity);
-        //영속성 문제로 먼저 chatMember save
+
 
         ChatRoomEntity chatRoomEntity = new ModelMapper().map(chatRoomDto,ChatRoomEntity.class);
         log.info(String.valueOf(chatRoomEntity));
@@ -126,19 +146,21 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public List<ChatRoomDto> getListChatRoom(int x, int member_num) {
+    public List<ChatRoomDto> getListChatRoom(int member_num) {
         log.info("Service: getListChatRoom");
         try{
-//            Iterable<ChatRoomEntity> chatRoomEntities = chatRoomRepository.findByMemberEntityMemberNum(member_num);
-//            log.info(String.valueOf(chatRoomEntities));
-            Iterable<ChatMemberEntity> chatMemberEntities = chatMemberRepository.findByMemberEntityMemberNum(member_num);
-            log.info(String.valueOf(chatMemberEntities));
+//            Iterable<ChatMemberEntity> chatMemberEntities = chatMemberRepository.findByMemberEntityMemberNum(member_num);
+//            log.info(String.valueOf(chatMemberEntities));
+            Iterable<ChatRoomEntity> chatRoomEntities = chatRoomRepository.findByMemberEntityMemberNum(member_num);
             List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
-            chatMemberEntities.forEach(v->{
-                log.info("씨발");
-                log.info(String.valueOf(v.getChatRoomEntity()));
-                chatRoomDtoList.add(new ModelMapper().map(v.getChatRoomEntity(),ChatRoomDto.class));
+            chatRoomEntities.forEach(v->{
+                chatRoomDtoList.add(new ModelMapper().map(v,ChatRoomDto.class));
             });
+//            chatMemberEntities.forEach(v->{
+//                log.info("씨발");
+//                log.info(String.valueOf(v.getChatRoomEntity()));
+//                chatRoomDtoList.add(new ModelMapper().map(v.getChatRoomEntity(),ChatRoomDto.class));
+//            });
             log.info(String.valueOf(chatRoomDtoList));
             log.info("Service Done: getListChatRoom service done");
             return chatRoomDtoList;
@@ -163,5 +185,17 @@ public class ChatServiceImpl implements ChatService{
     @Override
     public int deleteChatRoom(int chatRoom_num) {
         return 0;
+    }
+
+    @Override
+    public List<ResponseMember> getListMemberWithoutChatMember(int chatRoomNum, int memberNum) {
+        Iterable<MemberEntity> memberEntities = memberRepository.findByMemberNumWithOutChatMember(chatRoomNum);
+        log.info(String.valueOf(memberEntities));
+        List<ResponseMember> responseMemberList = new ArrayList<>();
+        memberEntities.forEach(v->{
+            responseMemberList.add(new ModelMapper().map(v, ResponseMember.class));
+        });
+        log.info(String.valueOf(responseMemberList));
+        return responseMemberList;
     }
 }

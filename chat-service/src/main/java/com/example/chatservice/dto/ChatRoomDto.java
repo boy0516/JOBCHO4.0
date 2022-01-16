@@ -2,7 +2,6 @@ package com.example.chatservice.dto;
 
 import com.example.chatservice.jpa.ChatEntity;
 import com.example.chatservice.jpa.ChatMemberEntity;
-import com.example.chatservice.jpa.TeamEntity;
 import lombok.Data;
 
 import java.util.Date;

@@ -10,4 +10,5 @@ public class ResponseMember {
     private String memberName;
     private String memberPosition;
     private String profileName;
+    private int isLive;
 }
