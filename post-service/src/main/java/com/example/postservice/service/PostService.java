@@ -12,6 +12,8 @@ public interface PostService {
 	PostDto getPost(Long postNum);
 	PostDto updatePost(PostDto postDto);
 	void deletePost(Long postNum);
+	void updateReplyCnt(Long postNum);
+	void deleteReplyCnt(Long postNum);
 
 
 	

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseBoard {
 
+    private Long boardNum;
     private String boardName;
     private String boardInfo;
     private Integer teamNum;

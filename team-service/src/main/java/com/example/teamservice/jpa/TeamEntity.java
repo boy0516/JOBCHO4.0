@@ -16,8 +16,6 @@ public class TeamEntity implements Serializable {
     private int teamNum;
 
     @Column(nullable = false)
-    private int userNum;
-    @Column(nullable = false)
     private String teamName;
     @Column(nullable = true)
     private String teamInfo;
@@ -28,5 +26,7 @@ public class TeamEntity implements Serializable {
     @ColumnDefault(value = "CURRENT_TIMESTAMP")
     private Date teamDate;
 
-
+    @ManyToOne
+    @JoinColumn(name="USER_NUM")
+    private UserEntity userEntity;
 }

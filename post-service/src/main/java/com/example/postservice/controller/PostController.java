@@ -14,6 +14,9 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/team/{team_num}/board/{board_num}/post")
@@ -34,9 +38,9 @@ public class PostController {
 
     /*게시글 생성*/
     @PostMapping("/new")
-    public ResponseEntity<ResponsePost> createOrder(@PathVariable("board_num") Integer boardNum,
+    public ResponseEntity<String> createPost(@PathVariable("board_num") Integer boardNum,
                                                     @RequestBody RequestPost requestPost) {
-        log.info("Before 게시글 생성: " + boardNum);
+        log.info("Before 게시글 생성: " + requestPost.getPostContents());
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
@@ -48,30 +52,36 @@ public class PostController {
         ResponsePost responsePost = mapper.map(createdPost, ResponsePost.class);
 
 
-        log.info("After 게시글 생성");
-        return ResponseEntity.status(HttpStatus.CREATED).body(responsePost);
+        log.info("After 게시글 생성"+ responsePost.getPostTitle());
+        return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
 
 
     /*게시글 리스트 조회*/
-    @GetMapping("")
-    public ResponseEntity<HashMap<Object, Object>> getListPost(@PathVariable("board_num") Integer boardNum,
-                                                                @RequestBody Criteria cri){
+    @PostMapping("")
+    public ResponseEntity<HashMap<Object,Object>> getListPost(@PathVariable("board_num") Integer boardNum,
+                                                               @RequestBody Criteria cri){
 
-        log.info("게시글 리스트 요청: " + boardNum);
+        //임시 데이터
+        cri.setAmount(3);
+        Integer num = cri.getPageNum() -1;
 
         //페이징 처리
-        PageRequest pageRequest = PageRequest.of(cri.getPageNum(), cri.getAmount());
+        Pageable pageRequest = PageRequest.of(num, 3, Sort.by(Sort.Direction.DESC, "postNum"));
+
         Page<PostEntity> postList = postService.getListPost(boardNum, pageRequest);
 
+
         PageInfo page = new PageInfo(cri, postList.getTotalElements());
+
 
         HashMap<Object, Object> map = new HashMap<Object, Object>();
         map.put("getListPost", postList); //게시글 목록
         map.put("pageMaker", page);
         //map.put("board", boardService.getBoard(board_num)); //게시판 정보
 
-        log.info("게시글 리스트 반환: "+postList);
+
+        log.info("게시글 리스트 반환: "+postList.getContent());
         return ResponseEntity.status(HttpStatus.OK).body(map);
     }
 
@@ -82,18 +92,20 @@ public class PostController {
 
         log.info("게시글 상세정보 요청: " +postNum);
         ModelMapper mapper =  new ModelMapper();
+
         PostDto postDto = postService.getPost(postNum);
+        log.info("게시글 상세정보 요청: " +postDto.getPostTitle());
 
         ResponsePost result = mapper.map(postDto, ResponsePost.class);
-
         log.info("게시글 상세정보 반환:" + result );
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
 
     /*게시글 수정*/
-    @PutMapping("{post_num}")
-    public ResponseEntity<ResponsePost> updatePost(@PathVariable("post_num") Long postNum,
+    @PutMapping("{postNum}")
+    public ResponseEntity<ResponsePost> updatePost(@PathVariable("postNum") Long postNum,
                                                    @RequestBody RequestPost requestPost){
 
         log.info("게시글 수정 요청:  "+ postNum);
@@ -121,6 +133,30 @@ public class PostController {
         return new ResponseEntity<>("삭제 완료", HttpStatus.OK);
     }
 
+
+    /**
+     * 특정 게시글 댓글 수 +1
+     */
+    @PostMapping("/{post_num}")
+    public ResponseEntity<String> updateReplyCnt(@PathVariable("post_num") Long postNum){
+
+        log.info("게시글 댓글 수 증가: " + postNum);
+        postService.updateReplyCnt(postNum);
+
+        return new ResponseEntity<>("댓글 수 +1 완료", HttpStatus.OK);
+    }
+
+    /**
+     * 특정 게시글 댓글 수 -1
+     */
+    @PostMapping("/reply/{post_num}")
+    public ResponseEntity<String> deleteReplyCnt(@PathVariable("post_num") Long postNum){
+
+        log.info("게시글 댓글 수 -1: " + postNum);
+        postService.deleteReplyCnt(postNum);
+
+        return new ResponseEntity<>("댓글 수 -1 완료", HttpStatus.OK);
+    }
 
 
 }

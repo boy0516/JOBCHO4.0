@@ -11,10 +11,10 @@ spring:
         web-allow-others: true
       path: /h2-console
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-#    username: sa
-#    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://database-1.cb1j1cyakhmd.ap-northeast-2.rds.amazonaws.com:3306/team-service
+    username: admin
+    password:
 
 eureka:
   instance:

@@ -53,14 +53,14 @@ public class BoardController {
 
 
 		//Entity -> ResponseBoard
-		List<ResponseBoard> result = new ArrayList<>();
+		List<ResponseBoard> board = new ArrayList<>();
 		boardList.forEach(v -> {
-			result.add(new ModelMapper().map(v, ResponseBoard.class));
+			board.add(new ModelMapper().map(v, ResponseBoard.class));
 		});
 
-		log.info("게시판 목록 불러온 후" + result);
+		log.info("게시판 목록 불러온 후" + board);
 
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+		return ResponseEntity.status(HttpStatus.OK).body(board);
 	}
 	
 	

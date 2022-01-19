@@ -23,10 +23,7 @@ public class TeamController {
 
     @Autowired
     private TeamService teamService;
-//
-//    @Autowired
-//    private MembersService memberService;
-//
+
     //팀생성
     @PostMapping("/{user_num}")
     public ResponseEntity<RequestTeam> insertTeam(@RequestBody RequestTeam requestTeam, @PathVariable("user_num") int user_num){
@@ -34,6 +31,7 @@ public class TeamController {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         TeamDto teamDto = mapper.map(requestTeam, TeamDto.class);
+
         log.info(String.valueOf(teamDto));
         //팀생성 실행
         int re = teamService.insertTeam(teamDto);
@@ -41,7 +39,7 @@ public class TeamController {
         return re==1?ResponseEntity.status(HttpStatus.CREATED).body(requestTeam)
                 :ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
-//
+
     //팀불러오기
     @GetMapping(value = "/{user_num}")
     public ResponseEntity<List<ResponseTeam>> getListTeam(@PathVariable("user_num") int user_num){
@@ -78,8 +76,7 @@ public class TeamController {
                 ? new ResponseEntity<>(result,HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-//
-//
+
     //팀삭제
     @DeleteMapping(value = "/{team_num}")
     public ResponseEntity<ResponseTeam> deleteTeam(@PathVariable("team_num") int team_num){

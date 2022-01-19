@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>login</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/jobcho/login/css/login.css">
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+ <style>
+	@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
+	
+	*{
+	font-family: 'Gowun Dodum', sans-serif;
+	}
+</style>
+
+</head>
+<body>
+	<div id="wrap" class="job-login">
+		<h1>JOBCHO</h1>
+		
+
+			<div class="job-container">
+				<div class="login-input">
+					<p class="id-pass-inp">
+						<input type="text" id="inputId" name="username" placeholder="아이디">
+					</p>
+					
+					<p class="id-pass-inp">
+						<input type="password" id="password" name="password" placeholder="비밀번호">
+
+					</p>
+				</div>
+
+			<div class="login-btn">
+				<button id="loginaction">로그인</button>
+			</div>
+			</div>
+		<br>
+		<div>
+			<a href="/users/findPw_1">힌트로 비밀번호 찾기</a>       <a href="/users/emailFindPw">이메일로 비밀번호 찾기</a>
+		</div>
+		
+
+
+	<p class="job-signup"><span>JOBCHO가 처음이신가요?</span>
+	
+	<a href="/jobcho/users/register" >회원가입</a>
+
+
+</body>
+<script src="/jobcho/login/js/login.js"></script>
+</html>

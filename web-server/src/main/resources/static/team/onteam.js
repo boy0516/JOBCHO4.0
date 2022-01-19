@@ -2,9 +2,22 @@
  * 
  */
 $(document).ready(function(){
-	const apiurl="http://127.0.0.1:8000/team-service"
+	//const apiurl="http://127.0.0.1:8000/team-service"
+	const apiurl="http://127.0.0.1:8000/"
 	var user_num=1;
-	
+
+	$.ajax({
+		url:'/user-service/userbytoken',
+		type:'Get',
+		dataType:'json',
+		success:function(result){
+			console.log(result);
+			$(".user-profile-name").html(result.userName);
+			$(".user-profile-email").html(result.userEmail);
+			$('.nav-profile-image-left').css('background-image', "url('/jobcho/display?filename="+result.profileName+"')");
+		}
+	});//$.ajax
+
 	function showTeamList(result){
 		str="";
 		result.forEach(function(item){
@@ -12,7 +25,7 @@ $(document).ready(function(){
 			str+=`<div class="job-container">
             <!--프로필-->
             
-            <div class="team-profile-image" style="background-image: url('/team/default.png');"></div>
+            <div class="team-profile-image" style="background-image: url('/jobcho/team/default.png');"></div>
             
             <div class="team-profile-info">
                 <p class="team-profile-name">`+item.teamName+`</p>
@@ -60,28 +73,28 @@ $(document).ready(function(){
 		console.log("aaaa");
 	
 		$.ajax({
-			url:apiurl+"/team/"+team_num+"/member/"+user_num,
+			url:"/member-service/team/"+team_num+"/member/"+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
 	        	console.log(result);
-	        	location.href="/team/main?team_num="+team_num+"&member_num="+result.member_num;
+	        	location.href="/jobcho/main?team_num="+team_num+"&member_num="+result.memberNum;
 	        }
 		})
 	}
 	
 	function showUpdateTeamInfo(team_num){
 		$.ajax({
-	        url:apiurl+'/team/'+user_num,
+	        url:'/team-service/team/'+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
 	        	console.log(result)
 	        	result.forEach(function(item){
-	        		if(item.team_num==team_num){
-	        			$("#updateTeamNum").val(item.team_num)
-	        			$("#updateTeamName").val(item.team_name)
-	        			$("#updateTeamInfo").val(item.team_info)
+	        		if(item.teamNum==team_num){
+	        			$("#updateTeamNum").val(item.teamNum)
+	        			$("#updateTeamName").val(item.teamName)
+	        			$("#updateTeamInfo").val(item.teamInfo)
 	        		}
 	        	})
 	        }
@@ -90,14 +103,14 @@ $(document).ready(function(){
 	
 	function updateTeamAction(){
 		$.ajax({
-            url:apiurl+'/team/'+$("#updateTeamNum").val(),
+            url:'/team-service/team/'+$("#updateTeamNum").val(),
             type:'put',
             contentType:'application/json',
             data: JSON.stringify(
             		{
-            			"team_num":$("#updateTeamNum").val(),
-            			"team_name":$("#updateTeamName").val(),
-            			"team_info":$("#updateTeamInfo").val()
+            			"teamNum":$("#updateTeamNum").val(),
+            			"teamName":$("#updateTeamName").val(),
+            			"teamInfo":$("#updateTeamInfo").val()
             		}),
             dataType: 'json',
             success:function(result){
@@ -111,7 +124,7 @@ $(document).ready(function(){
 	
 	function getTeamList(){
 		$.ajax({
-	        url:apiurl+'/team/'+user_num,
+	        url:'/team-service/team/'+user_num,
 	        type:'Get',
 	        dataType:'json',
 	        success:function(result){
@@ -133,7 +146,7 @@ $(document).ready(function(){
 			$('#updataTeamInfoModal').modal("hide");
 		}else{
 			$.ajax({
-				url : apiurl+'/team/'+$('#updateTeamNum').val(),
+				url : '/team-service/team/'+$('#updateTeamNum').val(),
 				type : "delete",
 				contentType : "application/json",
 				success : function(data){
@@ -170,13 +183,13 @@ $(document).ready(function(){
 			}
 		 
 		 $.ajax({
-				url : apiurl+'/team/'+user_num,
+				url : '/team-service/team/'+user_num,
 				type : "post",
 				contentType : "application/json",
 				data : JSON.stringify({
-							"team_name" : $("#insertTeamName").val(),			
-							"team_info" : $("#insertTeamInfo").val(),
-							"user_num" : $("#insertUser_num").val()
+							"teamName" : $("#insertTeamName").val(),
+							"teamInfo" : $("#insertTeamInfo").val(),
+							"userNum" : $("#insertUser_num").val()
 				}),
 				success : function(data){
 						console.log(data);

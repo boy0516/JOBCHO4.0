@@ -1,6 +1,7 @@
 package com.example.userservice.security;
 
 import com.example.userservice.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,18 +24,30 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    ;
-
-    @Override//권한
+    //권한
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-
-        http.authorizeRequests().antMatchers("/**").permitAll();
-
         http.headers().frameOptions().disable();
+
+        http.authorizeRequests().antMatchers("/**")
+                .access("hasIpAddress('172.18.0.0/16') or hasIpAddress('192.168.0.6')")
+                .and()
+                .addFilter(getAuthenticationFilter());
     }
 
+    private AuthenticationFilter getAuthenticationFilter() throws Exception{
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager(),
+                userService,
+                env);
+        authenticationFilter.setAuthenticationManager(authenticationManager());
 
+        return authenticationFilter;
+    }
+
+    //인증
+    //select pwd from users where email=?  // userDetailService가 담당
+    // db_pwd(encrypted) == input_pwd(encrypted)
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
